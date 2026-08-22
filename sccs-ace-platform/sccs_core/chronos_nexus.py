@@ -4,8 +4,8 @@ import time
 import argparse
 import sys
 import os
+import random
 
-# Import generated protobuf classes
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import chronos_interface_pb2
 import chronos_interface_pb2_grpc
@@ -15,9 +15,7 @@ class RealityFilterServicer(chronos_interface_pb2_grpc.RealityFilterServicer):
     def IngestTelemetry(self, request, context):
         print(f"Ingesting telemetry for session {request.session_id}, target: {request.query_target}")
 
-        # Simulate Sub-100 ms Fail-Fast Circuit Breaker
-        # In a real system, this would query physical sensors/APIs
-        if request.query_target == "corrupted":
+        if request.query_target == "corrupted" or random.random() < 0.05: # 5% chance of connection drop
             print("FAIL-FAST Triggered: Signal Absent")
             return chronos_interface_pb2.TelemetryResponse(
                 session_id=request.session_id,
@@ -25,8 +23,20 @@ class RealityFilterServicer(chronos_interface_pb2_grpc.RealityFilterServicer):
                 signal_absent=True
             )
 
-        # Simulate returning raw telemetry
-        raw_values = [101.2, 101.5, 101.1, 800.4, 101.3] # 800.4 is an outlier
+        # Simulate realistic telemetry (random walk + Cauchy noise spikes)
+        base_value = 100.0
+        raw_values = []
+        for _ in range(10):
+            # random walk
+            base_value += random.gauss(0, 0.5)
+            # Add occasional huge outlier (Cauchy-like spike)
+            if random.random() < 0.1:
+                val = base_value + random.choice([1, -1]) * random.uniform(50, 500)
+            else:
+                val = base_value
+            raw_values.append(round(val, 2))
+
+        print(f"Generated raw telemetry: {raw_values}")
         return chronos_interface_pb2.TelemetryResponse(
             session_id=request.session_id,
             raw_values=raw_values,
@@ -35,23 +45,27 @@ class RealityFilterServicer(chronos_interface_pb2_grpc.RealityFilterServicer):
 
     def SterilizeAndAlign(self, request, context):
         print(f"Sterilizing data for session {request.session_id}")
+        try:
+            ko_data = chronos_logos.process_and_sign(
+                request.session_id,
+                list(request.raw_values),
+                request.huber_delta
+            )
 
-        # Pass to chronos_logos for Huber M-Estimation and signing
-        ko_data = chronos_logos.process_and_sign(
-            request.session_id,
-            list(request.raw_values),
-            request.huber_delta
-        )
-
-        return chronos_interface_pb2.KnowledgeObject(
-            object_id=ko_data['object_id'],
-            timestamp_utc_ms=ko_data['timestamp'],
-            rfc8785_canonical_json=ko_data['json'],
-            huber_residual_delta=ko_data['huber_residual'],
-            signal_present=ko_data['signal_present'],
-            ed25519_signature=ko_data['signature'],
-            merkle_root_hash=ko_data['merkle_root']
-        )
+            return chronos_interface_pb2.KnowledgeObject(
+                object_id=ko_data['object_id'],
+                timestamp_utc_ms=ko_data['timestamp'],
+                rfc8785_canonical_json=ko_data['json'],
+                huber_residual_delta=ko_data['huber_residual'],
+                signal_present=ko_data['signal_present'],
+                ed25519_signature=ko_data['signature'],
+                merkle_root_hash=ko_data['merkle_root']
+            )
+        except Exception as e:
+             print(f"Sterilization failed: {e}")
+             context.set_code(grpc.StatusCode.INTERNAL)
+             context.set_details(str(e))
+             return chronos_interface_pb2.KnowledgeObject()
 
 def serve():
     parser = argparse.ArgumentParser()

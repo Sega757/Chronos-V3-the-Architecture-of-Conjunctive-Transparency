@@ -5,6 +5,7 @@ const { Pool } = require('pg');
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const path = require('path');
+const { sccsQueue } = require('./modules/scheduler/queue');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -62,6 +63,31 @@ app.get('/api/articles', async (req, res) => {
     }
 });
 
+app.get('/api/articles/slug/:slug', async (req, res) => {
+    try {
+        const { slug } = req.params;
+        const articleResult = await pool.query(`
+            SELECT a.*, c.name as category_name, c.frequency_type
+            FROM articles a
+            LEFT JOIN categories c ON a.category_id = c.id
+            WHERE a.slug = $1
+        `, [slug]);
+
+        if (articleResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Article not found' });
+        }
+
+        const article = articleResult.rows[0];
+        const blocksResult = await pool.query('SELECT * FROM article_blocks WHERE article_id = $1 ORDER BY position ASC', [article.id]);
+        article.blocks = blocksResult.rows;
+
+        res.json(article);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 app.get('/api/articles/:id/blocks', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM article_blocks WHERE article_id = $1 ORDER BY position ASC', [req.params.id]);
@@ -101,6 +127,12 @@ app.get('/api/categories', async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+});
+
+app.post('/api/generate', async (req, res) => {
+    const { prompt } = req.body;
+    await sccsQueue.add('generateArticle', { prompt });
+    res.json({ status: 'queued', message: 'Article generation queued.' });
 });
 
 // Trigger a Chronos verification via gRPC
