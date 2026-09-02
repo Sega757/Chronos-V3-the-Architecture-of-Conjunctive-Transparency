@@ -1,0 +1,5 @@
+grpcio>=1.62
+grpcio-tools>=1.62
+numpy>=1.26
+cryptography>=42.0
+-e ../../libs/chronos_common
