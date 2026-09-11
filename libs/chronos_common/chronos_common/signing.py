@@ -16,6 +16,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import (
     Ed25519PrivateKey,
     Ed25519PublicKey,
 )
+from cryptography.hazmat.primitives import serialization
 
 from chronos_common.canonical_json import canonicalize
 
@@ -31,7 +32,11 @@ class KeyPair:
 
     @property
     def public_key_bytes(self) -> bytes:
-        return self.private_key.public_key().public_bytes_raw()
+        # Use the standard serialization API to export raw 32-byte Ed25519 key
+        return self.private_key.public_key().public_bytes(
+            encoding=serialization.Encoding.Raw,
+            format=serialization.PublicFormat.Raw,
+        )
 
 
 @dataclass(frozen=True)
