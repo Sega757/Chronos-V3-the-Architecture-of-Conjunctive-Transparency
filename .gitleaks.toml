@@ -1,0 +1,11 @@
+title = "SCCS / Chronos V3 gitleaks configuration"
+
+# Extend (not replace) gitleaks' built-in default rule set.
+[extend]
+useDefault = true
+
+[allowlist]
+  description = "Known false positive: the `generic-api-key` heuristic flags the `private_key: Ed25519PrivateKey` dataclass field declaration in signing.py as a secret. It is a type annotation (the field holding an in-memory cryptography.hazmat Ed25519PrivateKey object), not embedded key material -- no real secret is present (reported entropy 3.85, well below any genuine key/token threshold)."
+  paths = [
+    '''^libs/chronos_common/chronos_common/signing\.py$''',
+  ]
