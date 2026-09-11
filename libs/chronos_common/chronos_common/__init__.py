@@ -8,12 +8,13 @@ holds across process and network boundaries.
 """
 
 from chronos_common.canonical_json import canonicalize
-from chronos_common.epistemics import shannon_entropy, vmf_concentration
+from chronos_common.epistemics import EpistemicState, shannon_entropy, vmf_concentration
 from chronos_common.merkle import MerkleTree, merkle_root
 from chronos_common.signing import KeyPair, Ed25519Signer, verify_signature
 
 __all__ = [
     "canonicalize",
+    "EpistemicState",
     "shannon_entropy",
     "vmf_concentration",
     "MerkleTree",
