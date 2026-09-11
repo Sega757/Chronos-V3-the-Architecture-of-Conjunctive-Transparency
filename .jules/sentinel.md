@@ -1,0 +1,4 @@
+## 2026-09-11 - [Gitleaks Missing Permissions]
+**Vulnerability:** The Gitleaks GitHub Action workflow requires explicit `permissions` for `contents: read` and `pull-requests: read` to function properly during pull request scans.
+**Learning:** Without explicit permissions, the GitHub integration token used by Gitleaks can lack the necessary rights to view pull requests, leading to 403 'Resource not accessible by integration' errors.
+**Prevention:** Always explicitly define required permissions for the Gitleaks job, particularly `contents: read` and `pull-requests: read`, in any GitHub Actions workflow utilizing it.
