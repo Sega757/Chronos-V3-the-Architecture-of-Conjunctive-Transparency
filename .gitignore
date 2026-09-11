@@ -1,0 +1,18 @@
+# Generated gRPC stubs (run `make proto` to regenerate)
+libs/chronos_common/generated/*_pb2.py
+libs/chronos_common/generated/*_pb2_grpc.py
+libs/chronos_common/generated/*_pb2.pyi
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+*.env
+
+# Docker / editor
+.DS_Store
+.idea/
+.vscode/
