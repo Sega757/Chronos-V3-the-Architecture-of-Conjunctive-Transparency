@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function renderBlock(block: any) {
+export function renderBlock(block: any): React.ReactNode {
     switch (block.block_type) {
         case 'text':
             return <p className="text-base text-[#c9d1d9] leading-relaxed">{block.content}</p>;
