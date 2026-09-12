@@ -864,9 +864,10 @@ Verification Engine Simulation (System 0 &amp; 2)
 
 <div>
 
-<label className="text-xs text-[#8b949e] block mb-1">Simulate Prompts Injection or Core Query:</label>
+<label htmlFor="prompt-input" className="text-xs text-[#8b949e] block mb-1">Simulate Prompts Injection or Core Query:</label>
 
 <textarea
+id="prompt-input"
 
 className="w-full bg-[#0d1117] border border-[#30363d] rounded p-2 text-sm text-[#c9d1d9] font-mono focus:outline-none focus:border-[#58a6ff]"
 
@@ -888,7 +889,7 @@ placeholder="Insert execution prompt..."
 
 <button
 
-className="bg-[#238636] hover:bg-[#2ea043] text-white font-bold py-2 px-4 rounded text-sm transition-all flex-1 disabled:opacity-50"
+className="bg-[#238636] hover:bg-[#2ea043] text-white font-bold py-2 px-4 rounded text-sm transition-all flex-1 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#161b22] focus-visible:ring-[#58a6ff] focus-visible:outline-none"
 
 onClick={runVerificationSimulation}
 
@@ -902,7 +903,7 @@ disabled={isSimulating}
 
 <button
 
-className="bg-[#30363d] hover:bg-[#8b949e]/20 text-[#c9d1d9] py-2 px-4 rounded text-sm transition-all"
+className="bg-[#30363d] hover:bg-[#8b949e]/20 text-[#c9d1d9] py-2 px-4 rounded text-sm transition-all focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#161b22] focus-visible:ring-[#58a6ff] focus-visible:outline-none"
 
 onClick={() => {
 
