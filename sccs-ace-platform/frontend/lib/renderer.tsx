@@ -1,5 +1,15 @@
 import React from 'react';
 
+function getSafeUrl(url: string): string {
+    if (!url) return '';
+    const lower = url.trim().toLowerCase();
+    // Prevent XSS from javascript: URIs in src attributes
+    if (lower.startsWith('javascript:') || lower.startsWith('vbscript:') || lower.startsWith('data:text/html')) {
+        return 'about:blank';
+    }
+    return url;
+}
+
 export function renderBlock(block: any) {
     switch (block.block_type) {
         case 'text':
@@ -23,7 +33,7 @@ export function renderBlock(block: any) {
             return (
                 <div className="my-4 border border-[#30363d] rounded-md overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={block.content} alt="Article graphic" className="w-full h-auto object-cover" />
+                    <img src={getSafeUrl(block.content)} alt="Article graphic" className="w-full h-auto object-cover" />
                 </div>
             );
         case 'links':
@@ -37,7 +47,7 @@ export function renderBlock(block: any) {
             return (
                 <div className="aspect-w-16 aspect-h-9 my-4">
                     <iframe
-                        src={block.content}
+                        src={getSafeUrl(block.content)}
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
