@@ -16,3 +16,4 @@ venv/
 .DS_Store
 .idea/
 .vscode/
+sccs-ace-platform/frontend/node_modules

@@ -535,9 +535,11 @@ v3.2.0-Sovereign
 
 <div className="flex items-center gap-2">
 
-<span className="text-xs text-[#8b949e] uppercase tracking-wider">Node Instance:</span>
+<label htmlFor="node-instance" className="text-xs text-[#8b949e] uppercase tracking-wider">Node Instance:</label>
 
 <select
+
+id="node-instance"
 
 className="bg-[#0d1117] border border-[#30363d] text-[#c9d1d9] rounded px-3 py-1 text-sm focus:outline-none focus:border-[#58a6ff]"
 
@@ -864,9 +866,11 @@ Verification Engine Simulation (System 0 &amp; 2)
 
 <div>
 
-<label className="text-xs text-[#8b949e] block mb-1">Simulate Prompts Injection or Core Query:</label>
+<label htmlFor="prompt-input" className="text-xs text-[#8b949e] block mb-1">Simulate Prompts Injection or Core Query:</label>
 
 <textarea
+
+id="prompt-input"
 
 className="w-full bg-[#0d1117] border border-[#30363d] rounded p-2 text-sm text-[#c9d1d9] font-mono focus:outline-none focus:border-[#58a6ff]"
 
