@@ -696,11 +696,11 @@ const metric = metrics[art.id];
 
 return (
 
-<div
+<button
 
 key={art.id}
 
-className={`border p-4 rounded-md transition-all cursor-pointer ${
+className={`w-full text-left border p-4 rounded-md transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:border-transparent ${
 
 selectedArticle?.id === art.id
 
@@ -764,7 +764,7 @@ Fact: Verified
 
 )}
 
-</div>
+</button>
 
 );
 

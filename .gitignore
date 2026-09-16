@@ -17,3 +17,4 @@ venv/
 .idea/
 .vscode/
 sccs-ace-platform/frontend/node_modules
+sccs-ace-platform/frontend/.next/
