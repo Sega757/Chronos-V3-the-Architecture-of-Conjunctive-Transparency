@@ -696,11 +696,11 @@ const metric = metrics[art.id];
 
 return (
 
-<div
+<button
 
 key={art.id}
 
-className={`border p-4 rounded-md transition-all cursor-pointer ${
+className={`border p-4 rounded-md transition-all cursor-pointer w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] ${
 
 selectedArticle?.id === art.id
 
@@ -711,6 +711,8 @@ selectedArticle?.id === art.id
 }`}
 
 onClick={() => setSelectedArticle(art)}
+
+aria-pressed={selectedArticle?.id === art.id}
 
 >
 
@@ -764,7 +766,7 @@ Fact: Verified
 
 )}
 
-</div>
+</button>
 
 );
 
@@ -906,7 +908,7 @@ disabled={isSimulating}
 
 <button
 
-className="bg-[#30363d] hover:bg-[#8b949e]/20 text-[#c9d1d9] py-2 px-4 rounded text-sm transition-all"
+className="bg-[#30363d] hover:bg-[#8b949e]/20 text-[#c9d1d9] py-2 px-4 rounded text-sm transition-all focus-visible:ring-2 focus-visible:ring-[#58a6ff]"
 
 onClick={() => {
 
