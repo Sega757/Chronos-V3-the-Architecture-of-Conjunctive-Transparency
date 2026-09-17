@@ -47,6 +47,8 @@ CREATE TABLE article_blocks (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE INDEX idx_article_blocks_article_position ON article_blocks(article_id, position ASC);
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
