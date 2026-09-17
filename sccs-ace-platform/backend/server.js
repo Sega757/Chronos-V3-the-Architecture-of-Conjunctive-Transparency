@@ -45,7 +45,8 @@ app.get('/api/sites', async (req, res) => {
         const result = await pool.query('SELECT * FROM sites WHERE is_active = true');
         res.json(result.rows);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('Database error [GET /api/sites]:', err);
+        res.status(500).json({ error: 'An internal server error occurred' });
     }
 });
 
@@ -59,7 +60,8 @@ app.get('/api/articles', async (req, res) => {
         `);
         res.json(result.rows);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('Database error [GET /api/articles]:', err);
+        res.status(500).json({ error: 'An internal server error occurred' });
     }
 });
 
@@ -83,7 +85,8 @@ app.get('/api/articles/slug/:slug', async (req, res) => {
 
         res.json(article);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error(`Database error [GET /api/articles/slug/${req.params.slug}]:`, err);
+        res.status(500).json({ error: 'An internal server error occurred' });
     }
 });
 
@@ -93,7 +96,8 @@ app.get('/api/articles/:id/blocks', async (req, res) => {
         const result = await pool.query('SELECT * FROM article_blocks WHERE article_id = $1 ORDER BY position ASC', [req.params.id]);
         res.json(result.rows);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error(`Database error [GET /api/articles/${req.params.id}/blocks]:`, err);
+        res.status(500).json({ error: 'An internal server error occurred' });
     }
 });
 
@@ -102,7 +106,8 @@ app.get('/api/logs', async (req, res) => {
         const result = await pool.query('SELECT * FROM generation_logs ORDER BY created_at DESC LIMIT 50');
         res.json(result.rows);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('Database error [GET /api/logs]:', err);
+        res.status(500).json({ error: 'An internal server error occurred' });
     }
 });
 
@@ -116,7 +121,8 @@ app.get('/api/metrics', async (req, res) => {
         });
         res.json(metricsMap);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('Database error [GET /api/metrics]:', err);
+        res.status(500).json({ error: 'An internal server error occurred' });
     }
 });
 
@@ -125,7 +131,8 @@ app.get('/api/categories', async (req, res) => {
         const result = await pool.query('SELECT * FROM categories');
         res.json(result.rows);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('Database error [GET /api/categories]:', err);
+        res.status(500).json({ error: 'An internal server error occurred' });
     }
 });
 
