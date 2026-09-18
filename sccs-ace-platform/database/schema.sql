@@ -94,3 +94,8 @@ CREATE TABLE metrics (
     bounce_rate DECIMAL(5,4) DEFAULT 0.0,
     recorded_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Performance Indexes
+CREATE INDEX idx_article_blocks_article_id ON article_blocks(article_id);
+CREATE INDEX idx_generation_logs_created_at ON generation_logs(created_at DESC);
+CREATE INDEX idx_articles_published_at ON articles(published_at DESC);
