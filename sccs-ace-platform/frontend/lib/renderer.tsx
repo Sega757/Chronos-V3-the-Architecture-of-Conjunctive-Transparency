@@ -22,8 +22,9 @@ export function renderBlock(block: any) {
             // content could be an image URL
             return (
                 <div className="my-4 border border-[#30363d] rounded-md overflow-hidden">
+                    {/* ⚡ Bolt: Added lazy loading for images below the fold to improve initial page load speed */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={block.content} alt="Article graphic" className="w-full h-auto object-cover" />
+                    <img src={block.content} alt="Article graphic" className="w-full h-auto object-cover" loading="lazy" />
                 </div>
             );
         case 'links':
@@ -36,11 +37,13 @@ export function renderBlock(block: any) {
         case 'youtube':
             return (
                 <div className="aspect-w-16 aspect-h-9 my-4">
+                    {/* ⚡ Bolt: Added lazy loading to YouTube iframe to defer loading of heavy third-party scripts */}
                     <iframe
                         src={block.content}
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
+                        loading="lazy"
                         className="w-full h-64 rounded-md border border-[#30363d]"
                     ></iframe>
                 </div>
