@@ -1,3 +1,7 @@
 ## 2023-10-27 - Missing Foreign Key Indexes
 **Learning:** PostgreSQL does not automatically create indexes on foreign keys. This leads to O(N) full sequential table scans when querying child records (like `article_blocks` by `article_id`), and inefficient memory sorting when querying data sorted by unindexed timestamp columns (like `created_at` or `published_at`).
 **Action:** Always verify query plans for joins and `ORDER BY` clauses to ensure critical columns are indexed to optimize performance.
+
+## 2024-05-24 - [Uncontrolled Inputs for Large Pages]
+**Learning:** In massive single-file Next.js/React components (like the SCCS Control Panel), binding a text input to `useState` causes a full page re-render on every keystroke, leading to severe typing latency. By using an uncontrolled input via `useRef`, you can bypass these excessive and unnecessary re-renders. However, `ref.current.value` must not be read directly in the component body (render phase) as it violates pure rendering and causes stale UI. Use it only in event handlers. Use `?? ""` instead of `|| "default"` for string fallbacks to avoid bugs when the user intentionally clears the input.
+**Action:** Use uncontrolled components with `useRef` for inputs that don't require reactive validation during typing to prevent cascading re-renders across the entire component tree, but ensure the value is only read within event handlers (like form submissions or button clicks).
