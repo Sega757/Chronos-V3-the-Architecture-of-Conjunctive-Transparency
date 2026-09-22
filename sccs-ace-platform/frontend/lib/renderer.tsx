@@ -1,5 +1,20 @@
 import React from 'react';
 
+function isValidUrl(urlString: string) {
+    if (typeof urlString !== 'string') return false;
+
+    // Allow relative URLs starting with / (but not // which could be a protocol-relative external URL)
+    if (urlString.startsWith('/') && !urlString.startsWith('//')) {
+        return true;
+    }
+    try {
+        const url = new URL(urlString);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch (e) {
+        return false;
+    }
+}
+
 export function renderBlock(block: any) {
     switch (block.block_type) {
         case 'text':
@@ -20,6 +35,9 @@ export function renderBlock(block: any) {
             );
         case 'image':
             // content could be an image URL
+            if (!isValidUrl(block.content)) {
+                return <div className="my-4 border border-[#30363d] rounded-md p-4 text-[#8b949e]">Invalid Image URL</div>;
+            }
             return (
                 <div className="my-4 border border-[#30363d] rounded-md overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -34,6 +52,9 @@ export function renderBlock(block: any) {
                 </div>
             );
         case 'youtube':
+            if (!isValidUrl(block.content)) {
+                return <div className="my-4 border border-[#30363d] rounded-md p-4 text-[#8b949e]">Invalid Video URL</div>;
+            }
             return (
                 <div className="aspect-w-16 aspect-h-9 my-4">
                     <iframe
