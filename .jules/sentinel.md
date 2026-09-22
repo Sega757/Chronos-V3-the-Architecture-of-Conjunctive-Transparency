@@ -6,3 +6,7 @@
 **Vulnerability:** The API endpoints in `sccs-ace-platform/backend/server.js` directly returned raw database error messages (`err.message`) to clients, potentially exposing sensitive database schema, queries, or internals.
 **Learning:** Returning unhandled or raw exceptions from the database or other internal services directly to the client is a significant information disclosure risk. Attackers can use this information to map out the backend system or construct targeted attacks like SQL injection.
 **Prevention:** Always log the full error details internally (e.g., using `console.error`) and return a generic, safe error message to the client, such as "Internal server error".
+## 2026-09-22 - [HIGH] Mitigate URL-based XSS in React components
+**Vulnerability:** The `<img>` and `<iframe>` components directly used unsanitized `block.content` for their `src` attributes, allowing potential injection of `javascript:` URIs.
+**Learning:** React does not automatically sanitize URLs passed to `src` or `href` attributes. User-provided content must be explicitly validated against an allowlist of safe protocols (like `http:` and `https:`) to prevent Stored XSS.
+**Prevention:** Always implement a URL validation helper for any dynamically generated links, images, or iframes.
