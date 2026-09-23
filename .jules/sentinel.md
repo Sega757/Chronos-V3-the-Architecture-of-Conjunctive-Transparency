@@ -6,3 +6,7 @@
 **Vulnerability:** The API endpoints in `sccs-ace-platform/backend/server.js` directly returned raw database error messages (`err.message`) to clients, potentially exposing sensitive database schema, queries, or internals.
 **Learning:** Returning unhandled or raw exceptions from the database or other internal services directly to the client is a significant information disclosure risk. Attackers can use this information to map out the backend system or construct targeted attacks like SQL injection.
 **Prevention:** Always log the full error details internally (e.g., using `console.error`) and return a generic, safe error message to the client, such as "Internal server error".
+## 2024-05-24 - [Fix hardcoded database credentials]
+**Vulnerability:** Hardcoded database connection credentials containing plain-text password (`postgresql://sccs_user:sccs_password@...`) existed as a fallback in backend codebase.
+**Learning:** Found in `server.js` and `modules/scheduler/queue.js`. Always verify connection configurations for environment fallback handling to prevent committing plain text credentials.
+**Prevention:** Remove hardcoded credentials from logic; instead enforce environment variables and use a 'fail-fast' startup mechanism if critical keys/credentials are missing.

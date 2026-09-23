@@ -5,8 +5,13 @@ const crypto = require('crypto');
 
 const connection = new Redis(process.env.REDIS_URL || 'redis://redis:6379');
 
+if (!process.env.DATABASE_URL) {
+  console.error('CRITICAL: DATABASE_URL environment variable is missing.');
+  process.exit(1);
+}
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://sccs_user:sccs_password@postgres:5432/sccs_db'
+  connectionString: process.env.DATABASE_URL
 });
 
 const sccsQueue = new Queue('sccsGenerationQueue', { connection });
