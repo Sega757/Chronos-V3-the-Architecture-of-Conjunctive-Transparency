@@ -701,16 +701,12 @@ return (
 key={art.id}
 
 className={`w-full text-left border p-4 rounded-md transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:border-transparent ${
-
 selectedArticle?.id === art.id
-
 ? 'bg-[#1f242c] border-[#58a6ff]'
-
 : 'bg-[#0d1117] border-[#30363d] hover:bg-[#161b22]'
-
 }`}
-
 onClick={() => setSelectedArticle(art)}
+aria-current={selectedArticle?.id === art.id ? "true" : undefined}
 
 >
 
@@ -893,15 +889,18 @@ disabled={isSimulating}
 <div className="flex flex-wrap gap-2">
 
 <button
-
-className="bg-[#238636] hover:bg-[#2ea043] text-white font-bold py-2 px-4 rounded text-sm transition-all flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
-
+className="bg-[#238636] hover:bg-[#2ea043] text-white font-bold py-2 px-4 rounded text-sm transition-all flex-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
 onClick={runVerificationSimulation}
-
 disabled={isSimulating}
-
+aria-busy={isSimulating}
 >
 
+{isSimulating && (
+<svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+</svg>
+)}
 {isSimulating ? 'Processing Pulse...' : 'Execute Audit Pulse'}
 
 </button>
