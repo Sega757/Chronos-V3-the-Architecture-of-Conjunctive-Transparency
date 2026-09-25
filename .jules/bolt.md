@@ -5,3 +5,6 @@
 ## 2026-09-24 - Lazy Loading External Assets
 **Learning:** Images and iframes (like YouTube embeds) rendered dynamically from AST blocks can significantly slow down the initial page load time if loaded eagerly.
 **Action:** Always include `loading="lazy"` for `<img>` and `<iframe>` tags, especially when content is dynamic or frequently falls below the fold.
+## 2026-09-25 - Memoization of Dynamic Configs in Next.js
+**Learning:** Frequent React state updates during data streaming or simulation intervals can trigger expensive unmemoized operations on every render, such as parsing inline JSON strings from configurations.
+**Action:** Use `useMemo` to parse JSON strings from external config data that remains static for long periods, mitigating UI locking or CPU bottlenecking during high-frequency render updates.

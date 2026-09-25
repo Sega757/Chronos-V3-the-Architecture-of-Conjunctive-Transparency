@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import Head from 'next/head';
 
@@ -159,7 +159,16 @@ const [simLog, setSimLog] = useState<string[]>([]);
 
 const [ctStatus, setCtStatus] = useState<{ logic: boolean; fact: boolean } | null>(null);
 
-
+// ⚡ Bolt Optimization: Memoize the parsed JSON config to prevent unnecessary re-parsing
+// on every re-render, especially during rapid simulation state updates (like simLog).
+const activeSiteConfig = useMemo(() => {
+  if (!activeSite?.config_json) return { huber_delta: 1.35 };
+  try {
+    return JSON.parse(activeSite.config_json);
+  } catch (e) {
+    return { huber_delta: 1.35 };
+  }
+}, [activeSite?.config_json]);
 
 // --- COMPONENT DID MOUNT / SEEDING (HYDRATION) ---
 
@@ -612,7 +621,7 @@ Node Configuration Overview
 
 <span className="text-sm font-mono text-[#e3b341]">
 
-{JSON.parse(activeSite.config_json).huber_delta || 1.35}
+{activeSiteConfig.huber_delta || 1.35}
 
 </span>
 
