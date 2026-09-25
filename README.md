@@ -1,55 +1,30 @@
-# Chronos V3 — The Architecture of Conjunctive Transparency
+# Chronos V3: Architecture of Conjunctive Transparency (C-T)
 
-Reference architecture and implementation scaffold for the **Sovereign
-Self-Correcting Cognitive System (SCCS)**: a bicameral reasoning
-architecture in which a fast, stochastic hypothesis generator (System 1)
-is never trusted on its own — every hypothesis it produces must pass
-through a deterministic, cryptographically-signed verification stage
-(System 2, the "Chronos Engine") before it can be treated as grounded, and
-any case System 2 cannot decide alone is resolved by staked, consensus-based
-arbitration (System 0).
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Python: 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Architecture: Bicameral SCCS](https://img.shields.io/badge/Architecture-Bicameral_SCCS-green.svg)](#system-topology)
+[![Security: Deterministic Audit](https://img.shields.io/badge/Security-RFC_8785_%7C_Ed25519-red.svg)](#cryptographic-proof--invariants)
 
-We call the governing principle **Conjunctive Transparency (C-T)**: a
-claim's content and the evidence for it travel together, signed,
-hashable, and independently re-verifiable — never as an assertion with
-evidence "available on request."
+Production reference implementation of a **Sovereign Self-Correcting Cognitive System (SCCS)**. 
 
-## Start here
+Chronos V3 implements a strict bicameral reasoning architecture: stochastic hypothesis generation (System 1) is decoupled from deterministic, cryptographically signed verification (System 2). Unresolved state divergence is arbitrated via multi-field consensus (System 0), enforcing the **Conjunctive Transparency (C-T)** standard: *claims and empirical proofs are immutable, co-located, and independently verifiable.*
 
-**[`docs/architecture/00-overview.md`](docs/architecture/00-overview.md)**
-is the entry point: repository map, the three subsystems, and reading
-order for the rest of the architecture docs
-([`01-bicameral-architecture.md`](docs/architecture/01-bicameral-architecture.md),
-[`02-conjunctive-transparency.md`](docs/architecture/02-conjunctive-transparency.md),
-[`03-posp-consensus.md`](docs/architecture/03-posp-consensus.md),
-[`04-invariants.md`](docs/architecture/04-invariants.md)).
+---
 
-## Layout
+## System Topology
 
-```
-proto/            gRPC service contracts for System 1, System 2, and System 0
-db/migrations/     PostgreSQL schema: nodes, hypotheses, verifications, audit log, governance, PoSP consensus
-libs/chronos_common/  shared primitives: canonical JSON (RFC 8785), Merkle hashing, Ed25519 signing, epistemic-state math
-services/
-  system1_hypothesis_generator/   System 1 reference service
-  system2_chronos_verifier/       System 2 reference service (zero-hallucination lock)
-  arbiter_module/                 System 0 reference service (PoSP consensus + L-E-J-D-A-S governance)
-docker-compose.yml   local multi-service stack
-Makefile             `make proto`, `make test`, `make up`, `make down`
-```
-
-## Running it locally
-
-```sh
-# 1. Generate gRPC stubs from proto/*.proto (requires grpcio-tools)
-pip install grpcio-tools
-make proto
-
-# 2. Run each service's unit tests
-make test
-
-# 3. Bring up the full stack (Postgres, Redis, System 1/2/0)
-make up
-```
-
-See [`SECURITY.md`](SECURITY.md) for the security policy.
+```mermaid
+flowchart TD
+    Inbound([User / External Event]) --> S1[System 1: Hypothesis Generator\nFast Stochastic LLM]
+    S1 -->|Draft Plan + Raw Telemetry| S2[System 2: Chronos Verifier\nDeterministic Rule & State Check]
+    
+    subgraph "Verification Plane"
+        S2 -->|Valid Contract & Low Entropy| Out([Execution Commit])
+        S2 -->|State Divergence / Policy Breach| S0[System 0: Meta-Arbiter Node\nPoSP Consensus & Multi-Field Filter]
+    end
+    
+    subgraph "Consensus & Audit Trail"
+        S0 -->|Audit Failed: Kill-Switch| Freeze([Fail-Fast Abort / Linguistic Facade])
+        S0 -->|Synthesized Resolution| Log[(PostgreSQL / Merkle Ledger)]
+        Log --> Out
+    end
