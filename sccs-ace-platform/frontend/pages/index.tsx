@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import Head from 'next/head';
 
@@ -130,6 +130,16 @@ export default function SCCSControlPanel() {
 
 const [activeSite, setActiveSite] = useState<Site | null>(null);
 
+// ⚡ Bolt: Memoize JSON.parse to prevent re-parsing on every frequent simulation render tick
+  const activeSiteConfig = useMemo(() => {
+    if (!activeSite?.config_json) return null;
+    try {
+      return JSON.parse(activeSite.config_json);
+    } catch (e) {
+      return null;
+    }
+  }, [activeSite?.config_json]);
+
 const [sites, setSites] = useState<Site[]>([]);
 
 const [categories, setCategories] = useState<Category[]>([]);
@@ -158,6 +168,8 @@ const [simHuber, setSimHuber] = useState<number>(0.0);
 const [simLog, setSimLog] = useState<string[]>([]);
 
 const [ctStatus, setCtStatus] = useState<{ logic: boolean; fact: boolean } | null>(null);
+
+
 
 
 
@@ -612,7 +624,7 @@ Node Configuration Overview
 
 <span className="text-sm font-mono text-[#e3b341]">
 
-{JSON.parse(activeSite.config_json).huber_delta || 1.35}
+{activeSiteConfig?.huber_delta || 1.35}
 
 </span>
 
