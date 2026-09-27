@@ -130,6 +130,16 @@ export default function SCCSControlPanel() {
 
 const [activeSite, setActiveSite] = useState<Site | null>(null);
 
+// ⚡ Bolt: Memoize JSON.parse to prevent re-parsing on every frequent simulation render tick
+  const activeSiteConfig = useMemo(() => {
+    if (!activeSite?.config_json) return null;
+    try {
+      return JSON.parse(activeSite.config_json);
+    } catch (e) {
+      return null;
+    }
+  }, [activeSite?.config_json]);
+
 const [sites, setSites] = useState<Site[]>([]);
 
 const [categories, setCategories] = useState<Category[]>([]);
@@ -159,16 +169,6 @@ const [simLog, setSimLog] = useState<string[]>([]);
 
 const [ctStatus, setCtStatus] = useState<{ logic: boolean; fact: boolean } | null>(null);
 
-
-// ⚡ Bolt: Memoize JSON.parse to prevent re-parsing on every frequent simulation render tick
-  const activeSiteConfig = useMemo(() => {
-    if (!activeSite?.config_json) return null;
-    try {
-      return JSON.parse(activeSite.config_json);
-    } catch (e) {
-      return null;
-    }
-  }, [activeSite?.config_json]);
 
 
 

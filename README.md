@@ -1,6 +1,6 @@
 # Chronos V3: Architecture of Conjunctive Transparency (C-T)
 
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python: 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Architecture: Bicameral SCCS](https://img.shields.io/badge/Architecture-Bicameral_SCCS-green.svg)](#system-topology)
 [![Security: Deterministic Audit](https://img.shields.io/badge/Security-RFC_8785_%7C_Ed25519-red.svg)](#cryptographic-proof--invariants)
