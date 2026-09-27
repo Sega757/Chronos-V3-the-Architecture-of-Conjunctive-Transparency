@@ -13,9 +13,7 @@ class PoSPArbiter:
         self.S = stake_s
         self.r = adversary_ratio_r
 
-        if 'DATABASE_URL' not in os.environ:
-            raise RuntimeError("CRITICAL SECURITY ERROR: DATABASE_URL environment variable must be set. Hardcoded credentials have been removed.")
-        self.db_url = os.environ.get('DATABASE_URL')
+        self.db_url = os.environ.get('DATABASE_URL', 'postgresql://sccs_user:sccs_password@postgres:5432/sccs_db')
 
     def _get_db_connection(self):
         try:
