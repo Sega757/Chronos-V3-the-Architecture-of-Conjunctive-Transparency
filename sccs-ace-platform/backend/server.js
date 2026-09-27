@@ -14,8 +14,12 @@ app.use(cors());
 app.use(express.json());
 
 // Database connection
+if (!process.env.DATABASE_URL) {
+  throw new Error("CRITICAL SECURITY ERROR: DATABASE_URL environment variable must be set. Hardcoded credentials have been removed.");
+}
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://sccs_user:sccs_password@postgres:5432/sccs_db'
+  connectionString: process.env.DATABASE_URL
 });
 
 // Setup gRPC Client

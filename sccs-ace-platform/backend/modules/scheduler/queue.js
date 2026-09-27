@@ -5,8 +5,12 @@ const crypto = require('crypto');
 
 const connection = new Redis(process.env.REDIS_URL || 'redis://redis:6379');
 
+if (!process.env.DATABASE_URL) {
+  throw new Error("CRITICAL SECURITY ERROR: DATABASE_URL environment variable must be set. Hardcoded credentials have been removed.");
+}
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://sccs_user:sccs_password@postgres:5432/sccs_db'
+  connectionString: process.env.DATABASE_URL
 });
 
 const sccsQueue = new Queue('sccsGenerationQueue', { connection });
