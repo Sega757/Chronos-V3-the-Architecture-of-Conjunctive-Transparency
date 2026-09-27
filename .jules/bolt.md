@@ -5,3 +5,7 @@
 ## 2026-09-24 - Lazy Loading External Assets
 **Learning:** Images and iframes (like YouTube embeds) rendered dynamically from AST blocks can significantly slow down the initial page load time if loaded eagerly.
 **Action:** Always include `loading="lazy"` for `<img>` and `<iframe>` tags, especially when content is dynamic or frequently falls below the fold.
+
+## 2026-09-27 - [Memoize expensive JSON.parse in render]
+**Learning:** Inline JSON.parse in React components can cause significant performance degradation when state updates frequently (like during simulation pulses). Parsing JSON is a synchronous, blocking operation that runs on every render if not memoized.
+**Action:** Use useMemo to cache parsed JSON payloads in React components that experience high-frequency state updates to prevent unnecessary re-parsing.
