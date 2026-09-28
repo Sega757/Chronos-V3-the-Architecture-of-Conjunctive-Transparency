@@ -712,6 +712,8 @@ return (
 
 key={art.id}
 
+aria-current={selectedArticle?.id === art.id ? "true" : undefined}
+
 className={`w-full text-left border p-4 rounded-md transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:border-transparent ${
 
 selectedArticle?.id === art.id
@@ -722,7 +724,7 @@ selectedArticle?.id === art.id
 
 }`}
 
-onClick={() => setSelectedArticle(art)}
+onClick={() => setSelectedArticle(selectedArticle?.id === art.id ? null : art)}
 
 >
 
@@ -790,7 +792,7 @@ Fact: Verified
 
 {/* Detailed Article Core Viewer */}
 
-{selectedArticle && (
+{selectedArticle ? (
 
 <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-5">
 
@@ -849,6 +851,16 @@ Dynamic AST Blocks / Article Payload
 
 </div>
 
+) : (
+<div className="bg-[#161b22] border border-[#30363d] rounded-lg p-10 flex flex-col items-center justify-center text-center h-full min-h-[300px]">
+<div className="bg-[#0d1117] p-4 rounded-full border border-[#30363d] mb-4">
+<svg className="w-8 h-8 text-[#8b949e]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+</svg>
+</div>
+<h3 className="text-base font-bold text-[#f0f6fc] mb-2">No Article Selected</h3>
+<p className="text-sm text-[#8b949e] max-w-xs">Select an article from the Autonomous Content Feed to view its Dynamic AST Blocks and detailed payload.</p>
+</div>
 )}
 
 
@@ -911,6 +923,8 @@ className="bg-[#238636] hover:bg-[#2ea043] text-white font-bold py-2 px-4 rounde
 onClick={runVerificationSimulation}
 
 disabled={isSimulating}
+
+aria-busy={isSimulating}
 
 >
 
