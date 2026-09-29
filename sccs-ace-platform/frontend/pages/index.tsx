@@ -170,6 +170,16 @@ const [simLog, setSimLog] = useState<string[]>([]);
 const [ctStatus, setCtStatus] = useState<{ logic: boolean; fact: boolean } | null>(null);
 
 
+const activeSiteConfig = useMemo(() => {
+if (!activeSite?.config_json) return null;
+try {
+return JSON.parse(activeSite.config_json);
+} catch (e) {
+return null;
+}
+}, [activeSite?.config_json]);
+
+
 
 
 
