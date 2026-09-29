@@ -14,8 +14,13 @@ app.use(cors());
 app.use(express.json());
 
 // Database connection
+if (!process.env.DATABASE_URL) {
+  console.error("CRITICAL: DATABASE_URL environment variable is not set.");
+  process.exit(1);
+}
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://sccs_user:sccs_password@postgres:5432/sccs_db'
+  connectionString: process.env.DATABASE_URL
 });
 
 // Setup gRPC Client
