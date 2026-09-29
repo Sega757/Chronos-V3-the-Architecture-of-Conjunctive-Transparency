@@ -13,7 +13,9 @@ class PoSPArbiter:
         self.S = stake_s
         self.r = adversary_ratio_r
 
-        self.db_url = os.environ.get('DATABASE_URL', 'postgresql://sccs_user:sccs_password@postgres:5432/sccs_db')
+        self.db_url = os.environ.get('DATABASE_URL')
+        if not self.db_url:
+            raise ValueError("CRITICAL: DATABASE_URL environment variable is not set.")
 
     def _get_db_connection(self):
         try:
