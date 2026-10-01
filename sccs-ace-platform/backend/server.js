@@ -143,13 +143,27 @@ app.get('/api/categories', async (req, res) => {
 
 app.post('/api/generate', async (req, res) => {
     const { prompt } = req.body;
-    await sccsQueue.add('generateArticle', { prompt });
+
+    // Security Enhancement: Input validation to prevent type confusion and excessively large payloads
+    if (!prompt || typeof prompt !== 'string' || prompt.trim().length === 0) {
+        return res.status(400).json({ error: 'Invalid prompt: must be a non-empty string.' });
+    }
+    if (prompt.length > 5000) {
+        return res.status(400).json({ error: 'Invalid prompt: exceeds maximum length.' });
+    }
+
+    await sccsQueue.add('generateArticle', { prompt: prompt.trim() });
     res.json({ status: 'queued', message: 'Article generation queued.' });
 });
 
 // Trigger a Chronos verification via gRPC
 app.post('/api/verify', (req, res) => {
     const { session_id, query_target } = req.body;
+
+    // Security Enhancement: Input validation to prevent gRPC crashes and unexpected behavior
+    if (!session_id || typeof session_id !== 'string' || typeof query_target !== 'string') {
+        return res.status(400).json({ error: 'Invalid input: session_id and query_target must be strings.' });
+    }
 
     chronosClient.IngestTelemetry({ session_id, query_target }, (error, response) => {
         if (error) {
