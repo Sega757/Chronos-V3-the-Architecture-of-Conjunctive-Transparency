@@ -10,3 +10,8 @@
 **Vulnerability:** Hardcoded database credentials (including the password 'sccs_password') were present as fallback values in several files across the backend and core services (queue.js, server.js, posp_consensus.py).
 **Learning:** Providing hardcoded credentials as fallbacks for environment variables is a critical security risk. If the environment variable fails to load, the application will attempt to connect using these hardcoded, potentially production credentials, which could be exposed in version control.
 **Prevention:** Remove hardcoded credentials from the source code. If an environment variable is required for execution, fail fast with a descriptive error message instead of providing an insecure default.
+
+## 2026-10-01 - [Missing Input Validation on API Endpoints]
+**Vulnerability:** API endpoints (`/api/generate`, `/api/verify`) lacked input validation, passing raw `req.body` parameters directly to downstream services (BullMQ, gRPC).
+**Learning:** Blindly trusting `req.body` can lead to type confusion vulnerabilities. For instance, passing an object instead of a string to `crypto.createHash().update()` in the queue worker causes unhandled exceptions and job failures.
+**Prevention:** Always validate and sanitize user input at the API boundary before passing it to internal queues, databases, or gRPC services.
