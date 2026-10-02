@@ -6,6 +6,18 @@ import pytest
 from cryptography.hazmat.primitives.asymmetric import ed25519
 from cryptography.hazmat.primitives import serialization
 
+# Ensure import of chronos_logos does not create private_key.pem in root workspace
+@pytest.fixture(scope="module", autouse=True)
+def chronos_logos_module(tmp_path_factory):
+    tmp_dir = tmp_path_factory.mktemp("key_dir")
+    old_cwd = os.getcwd()
+    os.chdir(tmp_dir)
+    try:
+        import chronos_logos
+        yield chronos_logos
+    finally:
+        os.chdir(old_cwd)
+
 from chronos_logos import (
     compute_huber_loss,
     als_irls_sterilize,
@@ -19,13 +31,24 @@ class TestHuberLoss:
     @pytest.mark.parametrize(
         "residuals, delta, expected",
         [
-            (np.array([0.0, 0.5, -0.5, 1.0, -1.0]), 1.35, np.array([0.0, 0.125, 0.125, 0.5, 0.5])),
-            (np.array([2.0, -2.0]), 1.35, np.array([1.35 * (2.0 - 0.675), 1.35 * (2.0 - 0.675)])),
+            (0.0, 1.35, 0.0),
+            (1.0, 1.35, 0.5),
+            (-1.0, 1.35, 0.5),
+            (1.35, 1.35, 0.5 * (1.35 ** 2)),
+            (2.0, 1.35, 1.35 * (2.0 - 0.5 * 1.35)),
+            (-3.0, 1.0, 1.0 * (3.0 - 0.5 * 1.0)),
         ],
     )
-    def test_compute_huber_loss_values(self, residuals, delta, expected):
-        loss = compute_huber_loss(residuals, delta)
-        np.testing.assert_allclose(loss, expected, rtol=1e-5)
+    def test_compute_huber_loss_scalars(self, residuals, delta, expected):
+        res = compute_huber_loss(np.array([residuals]), delta)
+        assert res[0] == pytest.approx(expected)
+
+    def test_compute_huber_loss_vectorized(self):
+        residuals = np.array([0.0, 0.5, 1.35, 2.0, -3.0])
+        delta = 1.0
+        expected = np.array([0.0, 0.125, 0.85, 1.5, 2.5])
+        result = compute_huber_loss(residuals, delta)
+        np.testing.assert_allclose(result, expected)
 
     def test_compute_huber_loss_threshold_boundary(self):
         delta = 1.35
@@ -50,6 +73,7 @@ class TestAlsIrlsSterilize:
         baseline, huber_loss = als_irls_sterilize(raw, delta=1.35)
         # Median baseline initially ~10.0, outliers should be severely downweighted
         assert baseline == pytest.approx(10.0, abs=0.2)
+        assert huber_loss > 0.0
 
     def test_identical_values(self):
         raw = [5.0, 5.0, 5.0, 5.0]
@@ -62,27 +86,32 @@ class TestMerkleRoot:
         assert generate_merkle_root([]) == ""
 
     def test_single_element(self):
-        val = [100]
-        expected_hash = hashlib.sha256("100".encode('utf-8')).hexdigest()
-        assert generate_merkle_root(val) == expected_hash
+        val = ["leaf1"]
+        expected = hashlib.sha256("leaf1".encode('utf-8')).hexdigest()
+        assert generate_merkle_root(val) == expected
 
     def test_even_elements(self):
-        values = [1, 2]
-        h1 = hashlib.sha256("1".encode('utf-8')).hexdigest()
-        h2 = hashlib.sha256("2".encode('utf-8')).hexdigest()
+        leaves = ["a", "b"]
+        h1 = hashlib.sha256(b"a").hexdigest()
+        h2 = hashlib.sha256(b"b").hexdigest()
         expected = hashlib.sha256((h1 + h2).encode('utf-8')).hexdigest()
-        assert generate_merkle_root(values) == expected
+        assert generate_merkle_root(leaves) == expected
 
     def test_odd_elements(self):
-        values = [1, 2, 3]
-        h1 = hashlib.sha256("1".encode('utf-8')).hexdigest()
-        h2 = hashlib.sha256("2".encode('utf-8')).hexdigest()
-        h3 = hashlib.sha256("3".encode('utf-8')).hexdigest()
-        # odd element duplicate
-        h12 = hashlib.sha256((h1 + h2).encode('utf-8')).hexdigest()
-        h33 = hashlib.sha256((h3 + h3).encode('utf-8')).hexdigest()
-        expected = hashlib.sha256((h12 + h33).encode('utf-8')).hexdigest()
-        assert generate_merkle_root(values) == expected
+        leaves = ["a", "b", "c"]
+        h1 = hashlib.sha256(b"a").hexdigest()
+        h2 = hashlib.sha256(b"b").hexdigest()
+        h3 = hashlib.sha256(b"c").hexdigest()
+        p1 = hashlib.sha256((h1 + h2).encode('utf-8')).hexdigest()
+        p2 = hashlib.sha256((h3 + h3).encode('utf-8')).hexdigest()
+        expected = hashlib.sha256((p1 + p2).encode('utf-8')).hexdigest()
+        assert generate_merkle_root(leaves) == expected
+
+    def test_generate_merkle_root_deterministic(self):
+        leaves = [10.5, 20.2, 30.1]
+        res1 = generate_merkle_root(leaves)
+        res2 = generate_merkle_root(leaves)
+        assert res1 == res2
 
 class TestCanonicalJson:
     def test_canonical_json_formatting(self):
@@ -115,7 +144,6 @@ class TestProcessAndSign:
         key_path = tmp_path / "private_key.pem"
         monkeypatch.setattr("chronos_logos.KEY_FILE", str(key_path))
 
-        # Load key in module context
         priv_key = load_or_generate_key()
         monkeypatch.setattr("chronos_logos.private_key", priv_key)
         pub_key = priv_key.public_key()
@@ -129,11 +157,14 @@ class TestProcessAndSign:
         assert isinstance(result["huber_residual"], float)
         assert isinstance(result["merkle_root"], str)
 
+        parsed = json.loads(result["json"])
+        assert parsed["object_id"] == result["object_id"]
+        assert parsed["source"] == "chronos_logos.py"
+
         # Verify signature
         payload_hash = hashlib.sha256(result["json"].encode('utf-8')).digest()
         message = result["merkle_root"].encode('utf-8') + payload_hash
 
-        # Standard Ed25519 verify will raise exception if invalid
         pub_key.verify(result["signature"], message)
 
     def test_tampered_payload_signature_verification_fails(self, tmp_path, monkeypatch):
