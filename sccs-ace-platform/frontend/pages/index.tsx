@@ -130,7 +130,8 @@ export default function SCCSControlPanel() {
 
 const [activeSite, setActiveSite] = useState<Site | null>(null);
 
-// ⚡ Bolt: Memoize JSON.parse to prevent re-parsing on every frequent simulation render tick
+
+
   const activeSiteConfig = useMemo(() => {
     if (!activeSite?.config_json) return null;
     try {
@@ -139,6 +140,7 @@ const [activeSite, setActiveSite] = useState<Site | null>(null);
       return null;
     }
   }, [activeSite?.config_json]);
+
 
 const [sites, setSites] = useState<Site[]>([]);
 
@@ -170,14 +172,6 @@ const [simLog, setSimLog] = useState<string[]>([]);
 const [ctStatus, setCtStatus] = useState<{ logic: boolean; fact: boolean } | null>(null);
 
 
-const activeSiteConfig = useMemo(() => {
-if (!activeSite?.config_json) return null;
-try {
-return JSON.parse(activeSite.config_json);
-} catch (e) {
-return null;
-}
-}, [activeSite?.config_json]);
 
 
 
@@ -515,7 +509,194 @@ setIsSimulating(false);
 
 
 
+
+  // ⚡ Bolt: Memoize static list rendering during simulation updates
+  const renderedSites = useMemo(() => sites.map(s => (
+
+<option key={s.id} value={s.id}>{s.domain}</option>
+
+)), [sites]);
+  const renderedCategories = useMemo(() => categories.map(cat => (
+
+<div key={cat.id} className="bg-[#0d1117] border border-[#30363d] p-4 rounded-md">
+
+<div className="flex justify-between items-start mb-2">
+
+<span className="text-xs text-[#8b949e] font-mono">ID: 0{cat.id}</span>
+
+<span className={`text-[10px] px-2 py-0.5 rounded-full font-mono ${
+
+cat.frequency_type === 'HF' ? 'bg-[#da3637] text-[#ff7b72]' :
+
+cat.frequency_type === 'MF' ? 'bg-[#d29922] text-[#f8e3a1]' : 'bg-[#238636] text-[#56d364]'
+
+}`}>
+
+{cat.frequency_type} frequency
+
+</span>
+
+</div>
+
+<h3 className="text-sm font-bold text-[#f0f6fc]">{cat.name}</h3>
+
+<p className="text-xs text-[#8b949e] mt-1 font-mono">/{cat.slug}</p>
+
+</div>
+
+)), [categories]);
+  const renderedArticles = useMemo(() => articles.map(art => {
+
+const metric = metrics[art.id];
+
 return (
+
+<button
+
+key={art.id}
+
+className={`w-full text-left border p-4 rounded-md transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:border-transparent ${
+
+selectedArticle?.id === art.id
+
+? 'bg-[#1f242c] border-[#58a6ff]'
+
+: 'bg-[#0d1117] border-[#30363d] hover:bg-[#161b22]'
+
+}`}
+
+onClick={() => setSelectedArticle(art)}
+
+>
+
+<div className="flex flex-wrap justify-between items-center gap-2 mb-2">
+
+<span className="text-xs text-[#58a6ff] font-mono bg-[#1f242c] px-2 py-0.5 rounded">
+
+/{art.slug}
+
+</span>
+
+<div className="flex gap-2">
+
+<span className="text-[10px] bg-[#238636]/20 text-[#56d364] px-2 py-0.5 rounded border border-[#238636]/40">
+
+Logic: Valid
+
+</span>
+
+<span className="text-[10px] bg-[#238636]/20 text-[#56d364] px-2 py-0.5 rounded border border-[#238636]/40">
+
+Fact: Verified
+
+</span>
+
+</div>
+
+</div>
+
+
+
+<h3 className="text-base font-bold text-[#f0f6fc] mb-1">{art.title}</h3>
+
+<p className="text-sm text-[#8b949e] line-clamp-2">{art.summary}</p>
+
+
+
+{metric && (
+
+<div className="mt-3 pt-3 border-t border-[#21262d] flex flex-wrap gap-4 text-xs text-[#8b949e] font-mono">
+
+<span>Views: <strong className="text-[#c9d1d9]">{metric.views}</strong></span>
+
+<span>Clicks: <strong className="text-[#c9d1d9]">{metric.clicks}</strong></span>
+
+<span>Avg Read: <strong className="text-[#c9d1d9]">{metric.avg_time_seconds}s</strong></span>
+
+<span>Bounce: <strong className="text-[#ff7b72]">{Math.round(metric.bounce_rate * 100)}%</strong></span>
+
+</div>
+
+)}
+
+</button>
+
+);
+
+}), [articles, metrics, selectedArticle?.id]);
+  const renderedLogs = useMemo(() => logs.map(log => (
+
+<div key={log.id} className="bg-[#0d1117] border border-[#21262d] p-3 rounded text-xs font-mono">
+
+<div className="flex justify-between items-center mb-2 border-b border-[#21262d] pb-2 text-[#8b949e]">
+
+<span>Log ID: {log.id}</span>
+
+<span>{log.created_at}</span>
+
+</div>
+
+
+
+<p className="text-xs text-[#c9d1d9] mb-2 font-sans line-clamp-2">
+
+<strong className="text-[#8b949e] font-mono">Prompt:</strong> {log.prompt_text}
+
+</p>
+
+
+
+<div className="space-y-1 text-[11px] text-[#8b949e]">
+
+<div className="flex justify-between">
+
+<span>Model Host:</span>
+
+<span className="text-[#58a6ff]">{log.model_used}</span>
+
+</div>
+
+<div className="flex justify-between">
+
+<span>Execution Time:</span>
+
+<span className="text-[#7ee787]">{log.execution_time_ms} ms</span>
+
+</div>
+
+<div className="flex justify-between">
+
+<span>Status Badge:</span>
+
+<span className="text-[#3fb950] uppercase font-bold">{log.status}</span>
+
+</div>
+
+</div>
+
+
+
+<div className="mt-2 bg-[#161b22] p-2 rounded border border-[#21262d] flex flex-col gap-1 text-[10px] text-[#8b949e]">
+
+<div className="truncate">
+
+<strong>Prompt Hash:</strong> <span className="text-[#e3b341]">{log.prompt_hash}</span>
+
+</div>
+
+<div className="truncate">
+
+<strong>Merkle Root:</strong> <span className="text-[#e3b341]">0xae77d01bc1e34cb9de3347c617e9...</span>
+
+</div>
+
+</div>
+
+</div>
+
+)), [logs]);
+
+  return (
 
 <div className="min-h-screen bg-[#0d1117] text-[#c9d1d9] font-sans">
 
@@ -577,11 +758,7 @@ if (matched) setActiveSite(matched);
 
 >
 
-{sites.map(s => (
-
-<option key={s.id} value={s.id}>{s.domain}</option>
-
-))}
+{renderedSites}
 
 </select>
 
@@ -664,35 +841,7 @@ Category Matrix & Link Topology
 
 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
 
-{categories.map(cat => (
-
-<div key={cat.id} className="bg-[#0d1117] border border-[#30363d] p-4 rounded-md">
-
-<div className="flex justify-between items-start mb-2">
-
-<span className="text-xs text-[#8b949e] font-mono">ID: 0{cat.id}</span>
-
-<span className={`text-[10px] px-2 py-0.5 rounded-full font-mono ${
-
-cat.frequency_type === 'HF' ? 'bg-[#da3637] text-[#ff7b72]' :
-
-cat.frequency_type === 'MF' ? 'bg-[#d29922] text-[#f8e3a1]' : 'bg-[#238636] text-[#56d364]'
-
-}`}>
-
-{cat.frequency_type} frequency
-
-</span>
-
-</div>
-
-<h3 className="text-sm font-bold text-[#f0f6fc]">{cat.name}</h3>
-
-<p className="text-xs text-[#8b949e] mt-1 font-mono">/{cat.slug}</p>
-
-</div>
-
-))}
+{renderedCategories}
 
 </div>
 
@@ -712,85 +861,7 @@ Autonomous Content Feed (SCCS Verified PCOs)
 
 <div className="flex flex-col gap-3">
 
-{articles.map(art => {
-
-const metric = metrics[art.id];
-
-return (
-
-<button
-
-key={art.id}
-
-className={`w-full text-left border p-4 rounded-md transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:border-transparent ${
-
-selectedArticle?.id === art.id
-
-? 'bg-[#1f242c] border-[#58a6ff]'
-
-: 'bg-[#0d1117] border-[#30363d] hover:bg-[#161b22]'
-
-}`}
-
-onClick={() => setSelectedArticle(art)}
-
->
-
-<div className="flex flex-wrap justify-between items-center gap-2 mb-2">
-
-<span className="text-xs text-[#58a6ff] font-mono bg-[#1f242c] px-2 py-0.5 rounded">
-
-/{art.slug}
-
-</span>
-
-<div className="flex gap-2">
-
-<span className="text-[10px] bg-[#238636]/20 text-[#56d364] px-2 py-0.5 rounded border border-[#238636]/40">
-
-Logic: Valid
-
-</span>
-
-<span className="text-[10px] bg-[#238636]/20 text-[#56d364] px-2 py-0.5 rounded border border-[#238636]/40">
-
-Fact: Verified
-
-</span>
-
-</div>
-
-</div>
-
-
-
-<h3 className="text-base font-bold text-[#f0f6fc] mb-1">{art.title}</h3>
-
-<p className="text-sm text-[#8b949e] line-clamp-2">{art.summary}</p>
-
-
-
-{metric && (
-
-<div className="mt-3 pt-3 border-t border-[#21262d] flex flex-wrap gap-4 text-xs text-[#8b949e] font-mono">
-
-<span>Views: <strong className="text-[#c9d1d9]">{metric.views}</strong></span>
-
-<span>Clicks: <strong className="text-[#c9d1d9]">{metric.clicks}</strong></span>
-
-<span>Avg Read: <strong className="text-[#c9d1d9]">{metric.avg_time_seconds}s</strong></span>
-
-<span>Bounce: <strong className="text-[#ff7b72]">{Math.round(metric.bounce_rate * 100)}%</strong></span>
-
-</div>
-
-)}
-
-</button>
-
-);
-
-})}
+{renderedArticles}
 
 </div>
 
@@ -1102,77 +1173,7 @@ Forensic Reasoning Ledger (L-E-J-D-A-S)
 
 <div className="flex flex-col gap-4 max-h-[450px] overflow-y-auto">
 
-{logs.map(log => (
-
-<div key={log.id} className="bg-[#0d1117] border border-[#21262d] p-3 rounded text-xs font-mono">
-
-<div className="flex justify-between items-center mb-2 border-b border-[#21262d] pb-2 text-[#8b949e]">
-
-<span>Log ID: {log.id}</span>
-
-<span>{log.created_at}</span>
-
-</div>
-
-
-
-<p className="text-xs text-[#c9d1d9] mb-2 font-sans line-clamp-2">
-
-<strong className="text-[#8b949e] font-mono">Prompt:</strong> {log.prompt_text}
-
-</p>
-
-
-
-<div className="space-y-1 text-[11px] text-[#8b949e]">
-
-<div className="flex justify-between">
-
-<span>Model Host:</span>
-
-<span className="text-[#58a6ff]">{log.model_used}</span>
-
-</div>
-
-<div className="flex justify-between">
-
-<span>Execution Time:</span>
-
-<span className="text-[#7ee787]">{log.execution_time_ms} ms</span>
-
-</div>
-
-<div className="flex justify-between">
-
-<span>Status Badge:</span>
-
-<span className="text-[#3fb950] uppercase font-bold">{log.status}</span>
-
-</div>
-
-</div>
-
-
-
-<div className="mt-2 bg-[#161b22] p-2 rounded border border-[#21262d] flex flex-col gap-1 text-[10px] text-[#8b949e]">
-
-<div className="truncate">
-
-<strong>Prompt Hash:</strong> <span className="text-[#e3b341]">{log.prompt_hash}</span>
-
-</div>
-
-<div className="truncate">
-
-<strong>Merkle Root:</strong> <span className="text-[#e3b341]">0xae77d01bc1e34cb9de3347c617e9...</span>
-
-</div>
-
-</div>
-
-</div>
-
-))}
+{renderedLogs}
 
 </div>
 
