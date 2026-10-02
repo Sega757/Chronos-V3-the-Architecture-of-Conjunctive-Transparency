@@ -68,5 +68,5 @@ def verify_signature(payload: Any, public_key: bytes, signature: bytes) -> bool:
     try:
         Ed25519PublicKey.from_public_bytes(public_key).verify(signature, digest)
         return True
-    except InvalidSignature:
+    except (InvalidSignature, ValueError, TypeError):
         return False
