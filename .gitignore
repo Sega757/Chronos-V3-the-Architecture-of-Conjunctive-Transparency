@@ -21,3 +21,4 @@ sccs-ace-platform/frontend/.next/
 sccs-ace-platform/frontend/next-env.d.ts
 sccs-ace-platform/frontend/next_output.log
 sccs-ace-platform/frontend/pnpm-lock.yaml
+private_key.pem
