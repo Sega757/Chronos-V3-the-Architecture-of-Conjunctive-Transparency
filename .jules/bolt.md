@@ -9,3 +9,6 @@
 ## 2026-09-27 - [Memoize expensive JSON.parse in render]
 **Learning:** Inline JSON.parse in React components can cause significant performance degradation when state updates frequently (like during simulation pulses). Parsing JSON is a synchronous, blocking operation that runs on every render if not memoized.
 **Action:** Use useMemo to cache parsed JSON payloads in React components that experience high-frequency state updates to prevent unnecessary re-parsing.
+## 2023-10-28 - Memoize Static List Rendering
+**Learning:** During rapid state updates (like real-time simulation ticks with `simLog`, `simEntropy`, `simHuber`), re-rendering the entire parent component forces React to recreate and re-reconcile the Virtual DOM nodes for lists (`articles.map`, `sites.map`, `categories.map`), even though their source data is completely static. This leads to severe rendering bottlenecks and UI stuttering.
+**Action:** Inline `useMemo` for mapped JSX lists to prevent unnecessary VDOM reconciliation during frequent state updates.
