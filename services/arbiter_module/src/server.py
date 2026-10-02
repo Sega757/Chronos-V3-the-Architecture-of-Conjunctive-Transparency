@@ -18,7 +18,7 @@ import grpc
 
 from chronos_common.signing import Ed25519Signer, KeyPair
 
-from src.exceptions import DuplicateSampleError, InvalidRequestError, SigningError, UnknownRoundError
+from src.exceptions import DuplicateSampleError, InvalidRequestError, UnknownRoundError
 from src.governance import GovernanceRegistry
 from src.posp_consensus import ConsensusEngine, Outcome, Sample
 
