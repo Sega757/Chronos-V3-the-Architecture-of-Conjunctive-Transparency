@@ -46,8 +46,7 @@ def als_irls_sterilize(raw_values, delta=1.35):
         weights = np.ones_like(y)
         outlier_mask = abs_res > delta
 
-        safe_res = np.where(abs_res == 0, 1e-8, abs_res)
-        weights[outlier_mask] = delta / safe_res[outlier_mask]
+        weights[outlier_mask] = delta / abs_res[outlier_mask]
 
         baseline = np.sum(weights * y) / np.sum(weights)
 
