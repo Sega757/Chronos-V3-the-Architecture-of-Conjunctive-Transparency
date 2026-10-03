@@ -554,7 +554,7 @@ return (
 <button
 
 key={art.id}
-
+aria-pressed={selectedArticle?.id === art.id}
 className={`w-full text-left border p-4 rounded-md transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:border-transparent ${
 
 selectedArticle?.id === art.id
@@ -871,7 +871,7 @@ Autonomous Content Feed (SCCS Verified PCOs)
 
 {/* Detailed Article Core Viewer */}
 
-{selectedArticle && (
+{selectedArticle ? (
 
 <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-5">
 
@@ -930,13 +930,15 @@ Dynamic AST Blocks / Article Payload
 
 </div>
 
+) : (
+<div className="bg-[#161b22] border border-[#30363d] border-dashed rounded-lg p-10 flex flex-col items-center justify-center text-center">
+  <span className="text-4xl mb-4" aria-hidden="true">📄</span>
+  <h2 className="text-sm font-semibold uppercase text-[#8b949e] mb-2 tracking-wider">No Article Selected</h2>
+  <p className="text-xs text-[#8b949e]">Select an article from the feed to view its dynamic AST blocks and payload.</p>
+</div>
 )}
 
-
-
 </section>
-
-
 
 {/* ================= RIGHT HALF: SCCS VERIFICATION ENGINE & FORENSIC LOGS ================= */}
 
@@ -1014,7 +1016,7 @@ aria-busy={isSimulating}
 </button>
 
 <button
-
+aria-label="Clear terminal output"
 className="bg-[#30363d] hover:bg-[#8b949e]/20 text-[#c9d1d9] py-2 px-4 rounded text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
 
 onClick={() => {
