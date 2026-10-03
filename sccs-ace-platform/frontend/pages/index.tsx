@@ -624,6 +624,8 @@ Fact: Verified
 );
 
 }), [articles, metrics, selectedArticle?.id]);
+  // ⚡ Bolt: Memoize expensive map operations for frequent simLog updates
+  const renderedSimLog = useMemo(() => simLog.map((logStr, i) => <div key={i}>{logStr}</div>), [simLog]);
   const renderedLogs = useMemo(() => logs.map(log => (
 
 <div key={log.id} className="bg-[#0d1117] border border-[#21262d] p-3 rounded text-xs font-mono">
@@ -1113,7 +1115,7 @@ SCCS Real-time Output Terminal
 
 ) : (
 
-simLog.map((logStr, i) => <div key={i}>{logStr}</div>)
+renderedSimLog
 
 )}
 
