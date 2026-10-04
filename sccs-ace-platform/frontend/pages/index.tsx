@@ -991,7 +991,7 @@ disabled={isSimulating}
 
 <button
 
-className="bg-[#238636] hover:bg-[#2ea043] text-white font-bold py-2 px-4 rounded text-sm transition-all flex-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+className="bg-[#238636] hover:bg-[#2ea043] text-white font-bold py-2 px-4 rounded text-sm transition-all flex-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#161b22]"
 
 onClick={runVerificationSimulation}
 
@@ -1019,7 +1019,7 @@ aria-busy={isSimulating}
 
 <button
 aria-label="Clear terminal output"
-className="bg-[#30363d] hover:bg-[#8b949e]/20 text-[#c9d1d9] py-2 px-4 rounded text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+className="bg-[#30363d] hover:bg-[#8b949e]/20 text-[#c9d1d9] py-2 px-4 rounded text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#161b22]"
 
 onClick={() => {
 
