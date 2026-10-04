@@ -70,6 +70,12 @@ export default function ArticleODR({ article, error }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  // ⚡ Bolt: Cache expensive SSR renders at the edge using stale-while-revalidate
+  context.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=60, stale-while-revalidate=300'
+  );
+
   const { slug } = context.params as { slug: string };
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://backend:3000/api';
 
