@@ -98,7 +98,13 @@ app.get('/api/articles/slug/:slug', async (req, res) => {
 
 app.get('/api/articles/:id/blocks', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM article_blocks WHERE article_id = $1 ORDER BY position ASC', [req.params.id]);
+        // 🛡️ Sentinel: Validate ID to be a number before passing to database to avoid internal query errors
+        const articleId = parseInt(req.params.id, 10);
+        if (isNaN(articleId)) {
+            return res.status(400).json({ error: 'Invalid ID format' });
+        }
+
+        const result = await pool.query('SELECT * FROM article_blocks WHERE article_id = $1 ORDER BY position ASC', [articleId]);
         res.json(result.rows);
     } catch (err) {
         console.error('API Error:', err);

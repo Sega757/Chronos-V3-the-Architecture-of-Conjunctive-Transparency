@@ -20,6 +20,14 @@ export function renderBlock(block: any) {
             );
         case 'image':
             // content could be an image URL
+            // 🛡️ Sentinel: Sanitize image source to prevent XSS via javascript: URIs
+            const isSafeImage = typeof block.content === 'string' &&
+                (block.content.startsWith('http://') || block.content.startsWith('https://'));
+
+            if (!isSafeImage) {
+                return <p className="text-[#f85149] text-sm">Error: Invalid image source</p>;
+            }
+
             return (
                 <div className="my-4 border border-[#30363d] rounded-md overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -35,6 +43,14 @@ export function renderBlock(block: any) {
                 </div>
             );
         case 'youtube':
+            // 🛡️ Sentinel: Sanitize iframe source to prevent XSS. Must be a valid youtube embed.
+            const isSafeYoutube = typeof block.content === 'string' &&
+                block.content.startsWith('https://www.youtube.com/embed/');
+
+            if (!isSafeYoutube) {
+                return <p className="text-[#f85149] text-sm">Error: Invalid video source</p>;
+            }
+
             return (
                 <div className="aspect-w-16 aspect-h-9 my-4">
                     {/* ⚡ Bolt: Lazy load assets for better initial page performance */}
