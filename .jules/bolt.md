@@ -12,3 +12,7 @@
 ## 2023-10-28 - Memoize Static List Rendering
 **Learning:** During rapid state updates (like real-time simulation ticks with `simLog`, `simEntropy`, `simHuber`), re-rendering the entire parent component forces React to recreate and re-reconcile the Virtual DOM nodes for lists (`articles.map`, `sites.map`, `categories.map`), even though their source data is completely static. This leads to severe rendering bottlenecks and UI stuttering.
 **Action:** Inline `useMemo` for mapped JSX lists to prevent unnecessary VDOM reconciliation during frequent state updates.
+
+## 2023-10-28 - Cache Expensive SSR Renders
+**Learning:** Next.js SSR pages without caching headers will block and hit the backend on every single request. This creates a severe performance bottleneck when traffic spikes, causing server overload and slow response times.
+**Action:** Use `stale-while-revalidate` in `getServerSideProps` for heavily read content to serve cached responses instantly from the edge while revalidating data in the background.
