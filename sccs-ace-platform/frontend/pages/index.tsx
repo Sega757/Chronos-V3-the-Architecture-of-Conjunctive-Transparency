@@ -995,7 +995,9 @@ className="bg-[#238636] hover:bg-[#2ea043] text-white font-bold py-2 px-4 rounde
 
 onClick={runVerificationSimulation}
 
-disabled={isSimulating}
+disabled={isSimulating || !promptInput.trim()}
+
+title={!promptInput.trim() ? "Please enter a prompt to execute" : isSimulating ? "Simulation in progress..." : "Execute Audit Pulse"}
 
 aria-busy={isSimulating}
 
@@ -1035,7 +1037,9 @@ setSimulationStep('Idle');
 
 }}
 
-disabled={isSimulating}
+disabled={isSimulating || simLog.length === 0}
+
+title={simLog.length === 0 ? "Terminal is already clear" : "Clear terminal output"}
 
 >
 
