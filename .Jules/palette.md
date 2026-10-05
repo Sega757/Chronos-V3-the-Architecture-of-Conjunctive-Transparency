@@ -10,3 +10,6 @@
 ## 2024-10-24 - Loading State Accessibility
 **Learning:** Adding a visual spinner to a button during a simulated long-running operation is good UX, but screen readers also need to know the state is busy.
 **Action:** Always add `aria-busy={true}` to elements when they are in a loading state, in addition to visual indicators like spinners.
+## 2024-05-24 - Explain Disabled States
+**Learning:** Users can feel stuck when primary action buttons (like "Execute" or "Clear") are disabled without any explanation of *why* they cannot be clicked. The terminal app interface relies heavily on user input state to determine button availability.
+**Action:** Always provide a native `title` attribute (or a custom tooltip component) on disabled buttons to explain exactly what the user needs to do to enable the action, converting a point of friction into a helpful guide.
