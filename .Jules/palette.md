@@ -13,3 +13,7 @@
 ## 2024-05-24 - Explain Disabled States
 **Learning:** Users can feel stuck when primary action buttons (like "Execute" or "Clear") are disabled without any explanation of *why* they cannot be clicked. The terminal app interface relies heavily on user input state to determine button availability.
 **Action:** Always provide a native `title` attribute (or a custom tooltip component) on disabled buttons to explain exactly what the user needs to do to enable the action, converting a point of friction into a helpful guide.
+
+## 2026-10-06 - Terminal Shortcuts Accessibility
+**Learning:** Discovered that terminal-like textareas (e.g., prompt inputs) require both a clear visual hint and an accessible shortcut (like Ctrl/Cmd + Enter) to submit, as standard users and power users rely heavily on keyboards in these contexts. Adding a visible hint inside the label is hidden from screen readers via `aria-hidden="true"` as they often mispronounce symbols like ⌘, which is standard practice.
+**Action:** Always provide keyboard shortcuts for primary actions in terminal/code-editor interfaces, and ensure the shortcut hint is visually present and semantically associated with the input's label.

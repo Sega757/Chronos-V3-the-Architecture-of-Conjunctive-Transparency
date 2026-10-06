@@ -963,19 +963,27 @@ Verification Engine Simulation (System 0 &amp; 2)
 
 <div>
 
-<label htmlFor="prompt-input" className="text-xs text-[#8b949e] block mb-1">Simulate Prompts Injection or Core Query:</label>
+<label htmlFor="prompt-input" className="flex justify-between items-center text-xs text-[#8b949e] mb-1"><span>Simulate Prompts Injection or Core Query:</span><span className="text-[10px] opacity-70 border border-[#30363d] px-1.5 py-0.5 rounded bg-[#161b22]" aria-hidden="true">⌘/Ctrl + Enter</span></label>
 
 <textarea
 
 id="prompt-input"
 
-className="w-full bg-[#0d1117] border border-[#30363d] rounded p-2 text-sm text-[#c9d1d9] font-mono focus:outline-none focus:border-[#58a6ff] disabled:opacity-50 disabled:cursor-not-allowed"
+className="w-full bg-[#0d1117] border border-[#30363d] rounded p-2 text-sm text-[#c9d1d9] font-mono focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
 
 rows={3}
 
 value={promptInput}
 
 onChange={(e) => setPromptInput(e.target.value)}
+
+onKeyDown={(e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    if (!isSimulating && promptInput.trim()) {
+      runVerificationSimulation();
+    }
+  }
+}}
 
 placeholder="Insert execution prompt..."
 
