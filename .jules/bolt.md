@@ -16,3 +16,6 @@
 ## 2023-10-28 - Cache Expensive SSR Renders
 **Learning:** Next.js SSR pages without caching headers will block and hit the backend on every single request. This creates a severe performance bottleneck when traffic spikes, causing server overload and slow response times.
 **Action:** Use `stale-while-revalidate` in `getServerSideProps` for heavily read content to serve cached responses instantly from the edge while revalidating data in the background.
+## 2023-10-28 - Element Caching for Selected Articles
+**Learning:** In the `SCCSControlPanel` component, updating high-frequency state like `simLog` or `simEntropy` causes the entire component to re-render, forcing React to unnecessarily recreate and reconcile the virtual DOM for static child components. When rendering lists of items that do not depend on the high-frequency state (such as the blocks of a selected article), this introduces a significant performance hit.
+**Action:** Use `useMemo` to cache the generated React elements for static lists (e.g., `selectedArticle.blocks`) so that React skips their reconciliation during unrelated state updates, significantly reducing the render time.

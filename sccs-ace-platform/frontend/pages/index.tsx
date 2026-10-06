@@ -698,6 +698,29 @@ Fact: Verified
 
 )), [logs]);
 
+  // ⚡ Bolt: Memoize static list rendering during simulation updates to prevent VDOM reconciliation
+  const renderedSelectedArticleBlocks = useMemo(() => selectedArticle?.blocks?.map(blk => (
+    <div key={blk.id} className="p-4 bg-[#0d1117] rounded border border-[#21262d]">
+      <div className="flex justify-between items-center mb-2 border-b border-[#21262d] pb-2">
+        <span className="text-xs text-[#8b949e] font-mono uppercase">Block Type: {blk.block_type}</span>
+        <span className="text-xs text-[#8b949e] font-mono">Pos: {blk.position}</span>
+      </div>
+
+      {blk.block_type === 'code' ? (
+        <pre className="text-xs bg-[#161b22] p-3 rounded overflow-x-auto text-[#7ee787] font-mono">
+          <code>{blk.content}</code>
+        </pre>
+      ) : blk.block_type === 'quote' ? (
+        <blockquote className="border-l-4 border-[#58a6ff] pl-3 italic text-[#8b949e]">
+          {blk.content}
+        </blockquote>
+      ) : (
+        <p className="text-sm text-[#c9d1d9] leading-relaxed">{blk.content}</p>
+      )}
+    </div>
+  )), [selectedArticle]);
+
+
   return (
 
 <div className="min-h-screen bg-[#0d1117] text-[#c9d1d9] font-sans">
@@ -888,45 +911,7 @@ Dynamic AST Blocks / Article Payload
 
 <div className="flex flex-col gap-4">
 
-{selectedArticle.blocks?.map(blk => (
-
-<div key={blk.id} className="p-4 bg-[#0d1117] rounded border border-[#21262d]">
-
-<div className="flex justify-between items-center mb-2 border-b border-[#21262d] pb-2">
-
-<span className="text-xs text-[#8b949e] font-mono uppercase">Block Type: {blk.block_type}</span>
-
-<span className="text-xs text-[#8b949e] font-mono">Pos: {blk.position}</span>
-
-</div>
-
-
-
-{blk.block_type === 'code' ? (
-
-<pre className="text-xs bg-[#161b22] p-3 rounded overflow-x-auto text-[#7ee787] font-mono">
-
-<code>{blk.content}</code>
-
-</pre>
-
-) : blk.block_type === 'quote' ? (
-
-<blockquote className="border-l-4 border-[#58a6ff] pl-3 italic text-[#8b949e]">
-
-{blk.content}
-
-</blockquote>
-
-) : (
-
-<p className="text-sm text-[#c9d1d9] leading-relaxed">{blk.content}</p>
-
-)}
-
-</div>
-
-))}
+{renderedSelectedArticleBlocks}
 
 </div>
 
