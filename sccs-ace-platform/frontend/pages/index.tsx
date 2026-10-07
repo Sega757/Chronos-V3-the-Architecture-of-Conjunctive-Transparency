@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 
 import Head from 'next/head';
 
@@ -170,6 +170,13 @@ const [simHuber, setSimHuber] = useState<number>(0.0);
 const [simLog, setSimLog] = useState<string[]>([]);
 
 const [ctStatus, setCtStatus] = useState<{ logic: boolean; fact: boolean } | null>(null);
+
+  const terminalEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    terminalEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [simLog]);
+
 
 
 
@@ -1115,7 +1122,7 @@ SCCS Real-time Output Terminal
 renderedSimLog
 
 )}
-
+<div ref={terminalEndRef} />
 </div>
 
 

@@ -17,3 +17,7 @@
 ## 2026-10-06 - Terminal Shortcuts Accessibility
 **Learning:** Discovered that terminal-like textareas (e.g., prompt inputs) require both a clear visual hint and an accessible shortcut (like Ctrl/Cmd + Enter) to submit, as standard users and power users rely heavily on keyboards in these contexts. Adding a visible hint inside the label is hidden from screen readers via `aria-hidden="true"` as they often mispronounce symbols like ⌘, which is standard practice.
 **Action:** Always provide keyboard shortcuts for primary actions in terminal/code-editor interfaces, and ensure the shortcut hint is visually present and semantically associated with the input's label.
+
+## 2026-10-07 - Auto-scrolling in Real-time Terminals
+**Learning:** Real-time log feeds and simulated terminals create immediate UX friction if they overflow their container without auto-scrolling. Users lose context and have to manually scroll continuously, which violates basic expectations for terminal-like interfaces.
+**Action:** Always inject a bottom sentinel ref (`terminalEndRef`) and use a `useEffect` hook tied to the log state array to automatically trigger `scrollIntoView()` whenever new content is appended to dynamic feeds.
