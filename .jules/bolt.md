@@ -19,3 +19,6 @@
 ## 2023-10-28 - Element Caching for Selected Articles
 **Learning:** In the `SCCSControlPanel` component, updating high-frequency state like `simLog` or `simEntropy` causes the entire component to re-render, forcing React to unnecessarily recreate and reconcile the virtual DOM for static child components. When rendering lists of items that do not depend on the high-frequency state (such as the blocks of a selected article), this introduces a significant performance hit.
 **Action:** Use `useMemo` to cache the generated React elements for static lists (e.g., `selectedArticle.blocks`) so that React skips their reconciliation during unrelated state updates, significantly reducing the render time.
+## 2026-10-07 - Composite Index for Filtering and Sorting
+**Learning:** When queries filter by a foreign key and sort by another column (e.g., `WHERE article_id = $1 ORDER BY position ASC`), a single-column index on the foreign key still requires an expensive in-memory sort. A composite index covering both the filter column and the sort column prevents this.
+**Action:** Add composite indexes for frequently queried pairs of (filter_column, sort_column) to avoid database memory sorts.
