@@ -18,3 +18,7 @@
 **Vulnerability:** The application rendered dynamic article content using `<img>` and `<iframe>` tags in `frontend/lib/renderer.tsx`, where the `src` attribute was populated directly from user-controlled database inputs (`block.content`) without validation.
 **Learning:** If user input is passed directly to a `src` attribute, an attacker can supply malicious URIs like `javascript:alert(1)` for images or completely arbitrary pages for iframes. These Stored XSS vectors would execute directly within the viewer's context without needing `dangerouslySetInnerHTML`.
 **Prevention:** Always sanitize URLs intended for `src` or `href` attributes. For images, ensure they use `http://` or `https://` schemas. For embedded objects like iframes, enforce strict domain allow-listing (e.g. `https://www.youtube.com/embed/`) to prevent unauthorized content or scripts from loading.
+## 2026-10-24 - [Defense-in-Depth] HTTP Security Headers
+**Vulnerability:** The Express backend lacked comprehensive HTTP security headers, leaving it potentially exposed to clickjacking, MIME-sniffing, and other web-based attacks.
+**Learning:** Even if an API is intended primarily for a specific frontend, applying standard security headers is a critical defense-in-depth measure. Relying on default Express settings omits essential browser protections.
+**Prevention:** Always implement `helmet` or equivalent middleware in Express applications to automatically configure robust baseline HTTP security headers.
