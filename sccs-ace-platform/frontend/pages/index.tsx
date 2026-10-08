@@ -981,7 +981,15 @@ placeholder="Insert execution prompt..."
 
 
 disabled={isSimulating}
+maxLength={250}
+aria-describedby="prompt-char-count"
 />
+
+<div id="prompt-char-count" className="text-right text-[10px] mt-1" aria-live="polite">
+<span className={promptInput.length >= 250 ? "text-[#ff7b72] font-bold" : promptInput.length >= 200 ? "text-[#e3b341]" : "text-[#8b949e]"}>
+{promptInput.length} / 250 characters
+</span>
+</div>
 
 </div>
 
