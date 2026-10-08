@@ -21,3 +21,7 @@
 ## 2026-10-07 - Auto-scrolling in Real-time Terminals
 **Learning:** Real-time log feeds and simulated terminals create immediate UX friction if they overflow their container without auto-scrolling. Users lose context and have to manually scroll continuously, which violates basic expectations for terminal-like interfaces.
 **Action:** Always inject a bottom sentinel ref (`terminalEndRef`) and use a `useEffect` hook tied to the log state array to automatically trigger `scrollIntoView()` whenever new content is appended to dynamic feeds.
+
+## 2026-10-08 - Character Limits on Textareas
+**Learning:** Found that long-running simulated systems require user input constraints to prevent unexpected memory or processing issues, and users need to know those limits. Textareas with character limits must provide accessible feedback using `aria-describedby` linked to a live character count.
+**Action:** Always add `maxLength` to textareas representing complex inputs, and implement a visual character count element that is programmatically associated via `aria-describedby` to ensure screen reader users are aware of the limit and their current progress.
