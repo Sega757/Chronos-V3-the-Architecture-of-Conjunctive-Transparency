@@ -1,5 +1,6 @@
 require('dotenv').config({ path: '../.env' });
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const helmet = require('helmet');
 const { Pool } = require('pg');
@@ -10,6 +11,16 @@ const { sccsQueue } = require('./modules/scheduler/queue');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// 🛡️ Sentinel: Rate limiting for expensive/resource-intensive API endpoints
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+    message: { error: 'Too many requests from this IP, please try again after 15 minutes' },
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
 
 app.use(helmet());
 app.use(cors());
@@ -149,7 +160,7 @@ app.get('/api/categories', async (req, res) => {
     }
 });
 
-app.post('/api/generate', async (req, res) => {
+app.post('/api/generate', apiLimiter, async (req, res) => {
     const { prompt } = req.body;
     if (typeof prompt !== 'string' || prompt.length === 0 || prompt.length > 5000) {
         return res.status(400).json({ error: 'Invalid prompt parameter' });
@@ -159,7 +170,7 @@ app.post('/api/generate', async (req, res) => {
 });
 
 // Trigger a Chronos verification via gRPC
-app.post('/api/verify', (req, res) => {
+app.post('/api/verify', apiLimiter, (req, res) => {
     const { session_id, query_target } = req.body;
 
     if (typeof session_id !== 'string' || session_id.length === 0 || session_id.length > 255) {

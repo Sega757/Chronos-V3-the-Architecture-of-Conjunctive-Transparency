@@ -22,3 +22,7 @@
 **Vulnerability:** The Express backend lacked comprehensive HTTP security headers, leaving it potentially exposed to clickjacking, MIME-sniffing, and other web-based attacks.
 **Learning:** Even if an API is intended primarily for a specific frontend, applying standard security headers is a critical defense-in-depth measure. Relying on default Express settings omits essential browser protections.
 **Prevention:** Always implement `helmet` or equivalent middleware in Express applications to automatically configure robust baseline HTTP security headers.
+## 2026-11-04 - [Missing Rate Limits on Resource Intensive Endpoints]
+**Vulnerability:** The POST endpoints `/api/generate` and `/api/verify` trigger expensive downstream processing (like gRPC ML/LLM services or worker queues) but had no rate limiting.
+**Learning:** Missing rate limits on resource-intensive endpoints can allow an attacker to cause Denial of Service (DoS) and queue starvation, severely impacting application availability and infrastructure costs.
+**Prevention:** Always implement rate limiting on sensitive, state-mutating, or resource-heavy endpoints (like those creating tasks or communicating with heavy services) to limit each IP or user to a safe number of requests per window.
