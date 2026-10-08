@@ -60,7 +60,7 @@ app.get('/api/sites', async (req, res) => {
 app.get('/api/articles', async (req, res) => {
     try {
         const result = await pool.query(`
-            SELECT a.*, c.name as category_name, c.frequency_type
+            SELECT a.id, a.title, a.slug, a.summary, a.status, a.views_count, a.published_at, c.name as category_name, c.frequency_type
             FROM articles a
             LEFT JOIN categories c ON a.category_id = c.id
             ORDER BY a.published_at DESC
@@ -126,7 +126,7 @@ app.get('/api/logs', async (req, res) => {
 
 app.get('/api/metrics', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM metrics');
+        const result = await pool.query('SELECT article_id, views, clicks, avg_time_seconds, bounce_rate FROM metrics');
         // Transform into a map by article_id for the frontend
         const metricsMap = {};
         result.rows.forEach(row => {
