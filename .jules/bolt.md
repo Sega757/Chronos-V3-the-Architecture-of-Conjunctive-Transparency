@@ -22,3 +22,6 @@
 ## 2026-10-07 - Composite Index for Filtering and Sorting
 **Learning:** When queries filter by a foreign key and sort by another column (e.g., `WHERE article_id = $1 ORDER BY position ASC`), a single-column index on the foreign key still requires an expensive in-memory sort. A composite index covering both the filter column and the sort column prevents this.
 **Action:** Add composite indexes for frequently queried pairs of (filter_column, sort_column) to avoid database memory sorts.
+## 2026-10-30 - Optimize Expensive Queries with Composite Indexes and Column Pruning
+**Learning:** Unbounded raw SQL queries with `SELECT *` and unindexed sorts result in massive network serialization overhead and expensive O(N) sequential table scans / in-memory sorts.
+**Action:** Add composite indexes covering filtering and sorting columns (e.g. `(category_id, published_at DESC)`), and explicitly project only the required columns in API endpoints (e.g. `SELECT a.id, a.title...`) instead of using `SELECT *` to optimize database and network load without breaking pagination contracts.

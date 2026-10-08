@@ -99,3 +99,4 @@ CREATE TABLE metrics (
 CREATE INDEX idx_article_blocks_article_id_position ON article_blocks(article_id, position);
 CREATE INDEX idx_generation_logs_created_at ON generation_logs(created_at DESC);
 CREATE INDEX idx_articles_published_at ON articles(published_at DESC);
+CREATE INDEX idx_articles_category_published ON articles(category_id, published_at DESC);
