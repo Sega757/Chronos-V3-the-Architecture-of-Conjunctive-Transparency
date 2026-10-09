@@ -26,3 +26,7 @@
 **Vulnerability:** The POST endpoints `/api/generate` and `/api/verify` trigger expensive downstream processing (like gRPC ML/LLM services or worker queues) but had no rate limiting.
 **Learning:** Missing rate limits on resource-intensive endpoints can allow an attacker to cause Denial of Service (DoS) and queue starvation, severely impacting application availability and infrastructure costs.
 **Prevention:** Always implement rate limiting on sensitive, state-mutating, or resource-heavy endpoints (like those creating tasks or communicating with heavy services) to limit each IP or user to a safe number of requests per window.
+## 2026-11-20 - [Missing Authentication on Admin Endpoints]
+**Vulnerability:** The `/api/logs` endpoint, which exposed sensitive generation logs (including raw user prompts and internal model execution details), was completely unauthenticated and publicly accessible.
+**Learning:** Administrative and diagnostic API routes must never assume they are hidden or inaccessible simply because they aren't directly linked in the main UI. Attackers often enumerate standard administrative paths (`/api/logs`, `/api/admin`, etc.) to find unprotected sensitive data.
+**Prevention:** Always enforce strict authentication and authorization checks (e.g., API keys, robust session validation) on endpoints that return sensitive application internals, logs, or administrative controls. Apply a default-deny mindset for data exposure.
