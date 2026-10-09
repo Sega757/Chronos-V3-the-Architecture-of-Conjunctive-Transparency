@@ -149,6 +149,7 @@ const [categories, setCategories] = useState<Category[]>([]);
 const [articles, setArticles] = useState<Article[]>([]);
 
 const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+const [copiedBlockId, setCopiedBlockId] = useState<number | null>(null);
 
 const [logs, setLogs] = useState<GenerationLog[]>([]);
 
@@ -714,9 +715,24 @@ Fact: Verified
       </div>
 
       {blk.block_type === 'code' ? (
-        <pre className="text-xs bg-[#161b22] p-3 rounded overflow-x-auto text-[#7ee787] font-mono">
-          <code>{blk.content}</code>
-        </pre>
+        <div className="relative group">
+          <pre className="text-xs bg-[#161b22] p-3 rounded overflow-x-auto text-[#7ee787] font-mono pr-16">
+            <code>{blk.content}</code>
+          </pre>
+          <button
+            aria-label="Copy code block"
+            className="absolute top-2 right-2 bg-[#21262d] hover:bg-[#30363d] text-[#c9d1d9] text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff]"
+            onClick={() => {
+              navigator.clipboard.writeText(blk.content);
+              setCopiedBlockId(blk.id);
+              setTimeout(() => setCopiedBlockId(null), 2000);
+            }}
+          >
+            <span aria-live="polite">
+              {copiedBlockId === blk.id ? 'Copied!' : 'Copy'}
+            </span>
+          </button>
+        </div>
       ) : blk.block_type === 'quote' ? (
         <blockquote className="border-l-4 border-[#58a6ff] pl-3 italic text-[#8b949e]">
           {blk.content}
@@ -725,7 +741,7 @@ Fact: Verified
         <p className="text-sm text-[#c9d1d9] leading-relaxed">{blk.content}</p>
       )}
     </div>
-  )), [selectedArticle]);
+  )), [selectedArticle, copiedBlockId]);
 
 
   return (
