@@ -25,3 +25,7 @@
 ## 2026-10-08 - Character Limits on Textareas
 **Learning:** Found that long-running simulated systems require user input constraints to prevent unexpected memory or processing issues, and users need to know those limits. Textareas with character limits must provide accessible feedback using `aria-describedby` linked to a live character count.
 **Action:** Always add `maxLength` to textareas representing complex inputs, and implement a visual character count element that is programmatically associated via `aria-describedby` to ensure screen reader users are aware of the limit and their current progress.
+
+## 2026-10-09 - Code Block Copy Button
+**Learning:** Developer-focused interfaces with code snippets greatly benefit from a quick 'Copy' button. These buttons must be keyboard accessible (focus-visible) and provide screen reader feedback (aria-live) when the copy action is completed, otherwise the action is invisible to AT.
+**Action:** Always wrap code blocks with a relative container and add an accessible, focusable copy button that provides immediate text feedback.
