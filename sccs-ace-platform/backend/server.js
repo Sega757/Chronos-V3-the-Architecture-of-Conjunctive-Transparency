@@ -126,6 +126,12 @@ app.get('/api/articles/:id/blocks', async (req, res) => {
 });
 
 app.get('/api/logs', async (req, res) => {
+    // 🛡️ Sentinel: Add authentication check for sensitive logs endpoint
+    const apiKey = req.headers['x-api-key'];
+    if (!apiKey || apiKey !== process.env.ADMIN_API_KEY) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
     try {
         const result = await pool.query('SELECT * FROM generation_logs ORDER BY created_at DESC LIMIT 50');
         res.json(result.rows);
