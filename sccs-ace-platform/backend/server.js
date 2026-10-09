@@ -127,7 +127,9 @@ app.get('/api/articles/:id/blocks', async (req, res) => {
 
 app.get('/api/logs', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM generation_logs ORDER BY created_at DESC LIMIT 50');
+        // ⚡ Bolt: Omit heavy unused text columns (like response_text) in API queries
+        // to save significant network and serialization overhead.
+        const result = await pool.query('SELECT id, model_used, prompt_hash, prompt_text, execution_time_ms, status, created_at FROM generation_logs ORDER BY created_at DESC LIMIT 50');
         res.json(result.rows);
     } catch (err) {
         console.error('API Error:', err);
