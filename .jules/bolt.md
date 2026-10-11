@@ -25,3 +25,6 @@
 ## 2026-10-30 - Optimize Expensive Queries with Composite Indexes and Column Pruning
 **Learning:** Unbounded raw SQL queries with `SELECT *` and unindexed sorts result in massive network serialization overhead and expensive O(N) sequential table scans / in-memory sorts.
 **Action:** Add composite indexes covering filtering and sorting columns (e.g. `(category_id, published_at DESC)`), and explicitly project only the required columns in API endpoints (e.g. `SELECT a.id, a.title...`) instead of using `SELECT *` to optimize database and network load without breaking pagination contracts.
+## 2026-10-31 - Extract State to Prevent List Re-renders
+**Learning:** Hoisting interactive transient state (like `copiedBlockId`) to the root of a large list component (like `SCCSControlPanel`) invalidates list memoization (e.g., `renderedSelectedArticleBlocks`) on every interaction, causing an O(N) re-render of all list items.
+**Action:** Extract interactive elements with localized state into their own isolated React components to prevent massive parent re-renders.
