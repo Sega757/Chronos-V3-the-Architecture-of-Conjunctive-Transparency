@@ -29,3 +29,7 @@
 ## 2026-10-09 - Code Block Copy Button
 **Learning:** Developer-focused interfaces with code snippets greatly benefit from a quick 'Copy' button. These buttons must be keyboard accessible (focus-visible) and provide screen reader feedback (aria-live) when the copy action is completed, otherwise the action is invisible to AT.
 **Action:** Always wrap code blocks with a relative container and add an accessible, focusable copy button that provides immediate text feedback.
+
+## 2024-10-13 - Scrollable Container Keyboard Accessibility
+**Learning:** Found that containers with `overflow-auto` (like code blocks, terminal logs, and ledgers) lack inherently focusable children and are unreachable via keyboard navigation. This traps keyboard users who cannot scroll to read hidden content.
+**Action:** Always make scrollable containers explicitly focusable by adding `tabIndex={0}`, an appropriate `aria-label`, and clear `focus-visible:ring-2` outline styles so users can tab to them and use arrow keys to scroll.
