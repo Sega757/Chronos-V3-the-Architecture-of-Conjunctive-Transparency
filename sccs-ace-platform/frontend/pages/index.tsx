@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 
 import Head from 'next/head';
 
@@ -154,6 +154,48 @@ const CodeBlock = ({ content }: { content: string }) => {
   );
 };
 
+
+// ⚡ Bolt: Extract ArticleItem component to prevent O(N) list re-renders when selection changes
+const ArticleItem = React.memo(({ art, isSelected, metric, onClick }: { art: Article, isSelected: boolean, metric: MetricSet, onClick: (art: Article) => void }) => {
+  return (
+    <button
+      aria-pressed={isSelected}
+      className={`w-full text-left border p-4 rounded-md transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:border-transparent ${
+        isSelected
+          ? 'bg-[#1f242c] border-[#58a6ff]'
+          : 'bg-[#0d1117] border-[#30363d] hover:bg-[#161b22]'
+      }`}
+      onClick={() => onClick(art)}
+    >
+      <div className="flex flex-wrap justify-between items-center gap-2 mb-2">
+        <span className="text-xs text-[#58a6ff] font-mono bg-[#1f242c] px-2 py-0.5 rounded">
+          /{art.slug}
+        </span>
+        <div className="flex gap-2">
+          <span className="text-[10px] bg-[#238636]/20 text-[#56d364] px-2 py-0.5 rounded border border-[#238636]/40">
+            Logic: Valid
+          </span>
+          <span className="text-[10px] bg-[#238636]/20 text-[#56d364] px-2 py-0.5 rounded border border-[#238636]/40">
+            Fact: Verified
+          </span>
+        </div>
+      </div>
+
+      <h3 className="text-base font-bold text-[#f0f6fc] mb-1">{art.title}</h3>
+      <p className="text-sm text-[#8b949e] line-clamp-2">{art.summary}</p>
+
+      {metric && (
+        <div className="mt-3 pt-3 border-t border-[#21262d] flex flex-wrap gap-4 text-xs text-[#8b949e] font-mono">
+          <span>Views: <strong className="text-[#c9d1d9]">{metric.views}</strong></span>
+          <span>Clicks: <strong className="text-[#c9d1d9]">{metric.clicks}</strong></span>
+          <span>Avg Read: <strong className="text-[#c9d1d9]">{metric.avg_time_seconds}s</strong></span>
+          <span>Bounce: <strong className="text-[#ff7b72]">{Math.round(metric.bounce_rate * 100)}%</strong></span>
+        </div>
+      )}
+    </button>
+  );
+});
+
 export default function SCCSControlPanel() {
 
 
@@ -180,6 +222,12 @@ const [categories, setCategories] = useState<Category[]>([]);
 const [articles, setArticles] = useState<Article[]>([]);
 
 const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+
+  // ⚡ Bolt: Memoize the click handler to preserve reference equality for child components
+  const handleArticleClick = useCallback((art: Article) => {
+    setSelectedArticle(art);
+  }, []);
+
 
 const [logs, setLogs] = useState<GenerationLog[]>([]);
 
@@ -583,85 +631,15 @@ cat.frequency_type === 'MF' ? 'bg-[#d29922] text-[#f8e3a1]' : 'bg-[#238636] text
 </div>
 
 )), [categories]);
-  const renderedArticles = useMemo(() => articles.map(art => {
-
-const metric = metrics[art.id];
-
-return (
-
-<button
-
-key={art.id}
-aria-pressed={selectedArticle?.id === art.id}
-className={`w-full text-left border p-4 rounded-md transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:border-transparent ${
-
-selectedArticle?.id === art.id
-
-? 'bg-[#1f242c] border-[#58a6ff]'
-
-: 'bg-[#0d1117] border-[#30363d] hover:bg-[#161b22]'
-
-}`}
-
-onClick={() => setSelectedArticle(art)}
-
->
-
-<div className="flex flex-wrap justify-between items-center gap-2 mb-2">
-
-<span className="text-xs text-[#58a6ff] font-mono bg-[#1f242c] px-2 py-0.5 rounded">
-
-/{art.slug}
-
-</span>
-
-<div className="flex gap-2">
-
-<span className="text-[10px] bg-[#238636]/20 text-[#56d364] px-2 py-0.5 rounded border border-[#238636]/40">
-
-Logic: Valid
-
-</span>
-
-<span className="text-[10px] bg-[#238636]/20 text-[#56d364] px-2 py-0.5 rounded border border-[#238636]/40">
-
-Fact: Verified
-
-</span>
-
-</div>
-
-</div>
-
-
-
-<h3 className="text-base font-bold text-[#f0f6fc] mb-1">{art.title}</h3>
-
-<p className="text-sm text-[#8b949e] line-clamp-2">{art.summary}</p>
-
-
-
-{metric && (
-
-<div className="mt-3 pt-3 border-t border-[#21262d] flex flex-wrap gap-4 text-xs text-[#8b949e] font-mono">
-
-<span>Views: <strong className="text-[#c9d1d9]">{metric.views}</strong></span>
-
-<span>Clicks: <strong className="text-[#c9d1d9]">{metric.clicks}</strong></span>
-
-<span>Avg Read: <strong className="text-[#c9d1d9]">{metric.avg_time_seconds}s</strong></span>
-
-<span>Bounce: <strong className="text-[#ff7b72]">{Math.round(metric.bounce_rate * 100)}%</strong></span>
-
-</div>
-
-)}
-
-</button>
-
-);
-
-}), [articles, metrics, selectedArticle?.id]);
+  const renderedArticles = useMemo(() => articles.map(art => (
+    <ArticleItem
+      key={art.id}
+      art={art}
+      isSelected={selectedArticle?.id === art.id}
+      metric={metrics[art.id]}
+      onClick={handleArticleClick}
+    />
+  )), [articles, metrics, selectedArticle?.id, handleArticleClick]);
   // ⚡ Bolt: Memoize expensive map operations for frequent simLog updates
   const renderedSimLog = useMemo(() => simLog.map((logStr, i) => <div key={i}>{logStr}</div>), [simLog]);
   const renderedLogs = useMemo(() => logs.map(log => (

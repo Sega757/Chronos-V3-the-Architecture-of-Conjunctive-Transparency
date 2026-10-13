@@ -28,3 +28,6 @@
 ## 2026-10-31 - Extract State to Prevent List Re-renders
 **Learning:** Hoisting interactive transient state (like `copiedBlockId`) to the root of a large list component (like `SCCSControlPanel`) invalidates list memoization (e.g., `renderedSelectedArticleBlocks`) on every interaction, causing an O(N) re-render of all list items.
 **Action:** Extract interactive elements with localized state into their own isolated React components to prevent massive parent re-renders.
+## 2023-11-01 - Preventing O(N) List Re-renders on Selection Change
+**Learning:** When a list is rendered from an array in React, and selecting an item updates the parent's state (e.g., `selectedArticle`), it forces all items in the list to re-render, creating an O(N) performance bottleneck.
+**Action:** Extract the list item into its own component wrapped with `React.memo()`. Pass primitive or stable references (like `isSelected` boolean) as props, and use `useCallback` for the selection handler to ensure referential equality across parent renders.
