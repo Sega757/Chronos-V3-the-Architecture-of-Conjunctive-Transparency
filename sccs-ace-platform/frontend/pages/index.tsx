@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback, memo } from 'react';
 
 import Head from 'next/head';
 
@@ -124,6 +124,57 @@ bounce_rate: number;
 
 
 
+
+// ⚡ Bolt: Extract ArticleItem to prevent O(N) re-renders when selection changes
+const ArticleItem = memo(({
+  art,
+  metric,
+  isSelected,
+  onSelect
+}: {
+  art: Article,
+  metric: any,
+  isSelected: boolean,
+  onSelect: (art: Article) => void
+}) => {
+  return (
+    <button
+      aria-pressed={isSelected}
+      className={`w-full text-left border p-4 rounded-md transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:border-transparent ${
+        isSelected
+          ? 'bg-[#1f242c] border-[#58a6ff]'
+          : 'bg-[#0d1117] border-[#30363d] hover:bg-[#161b22]'
+      }`}
+      onClick={() => onSelect(art)}
+    >
+      <div className="flex flex-wrap justify-between items-center gap-2 mb-2">
+        <span className="text-xs text-[#58a6ff] font-mono bg-[#1f242c] px-2 py-0.5 rounded">
+          /{art.slug}
+        </span>
+        <div className="flex gap-2">
+          <span className="text-[10px] bg-[#238636]/20 text-[#56d364] px-2 py-0.5 rounded border border-[#238636]/40">
+            Logic: Valid
+          </span>
+          <span className="text-[10px] bg-[#238636]/20 text-[#56d364] px-2 py-0.5 rounded border border-[#238636]/40">
+            Fact: Verified
+          </span>
+        </div>
+      </div>
+
+      <h3 className="text-base font-bold text-[#f0f6fc] mb-1">{art.title}</h3>
+      <p className="text-sm text-[#8b949e] line-clamp-2">{art.summary}</p>
+
+      {metric && (
+        <div className="mt-3 pt-3 border-t border-[#21262d] flex flex-wrap gap-4 text-xs text-[#8b949e] font-mono">
+          <span>Views: <strong className="text-[#c9d1d9]">{metric.views}</strong></span>
+          <span>Clicks: <strong className="text-[#c9d1d9]">{metric.clicks}</strong></span>
+          <span>Avg Read: <strong className="text-[#c9d1d9]">{metric.avg_time_seconds}s</strong></span>
+          <span>Bounce: <strong className="text-[#ff7b72]">{Math.round(metric.bounce_rate * 100)}%</strong></span>
+        </div>
+      )}
+    </button>
+  );
+});
 
 // ⚡ Bolt: Extract copy state to localized component to prevent main component re-renders
 const CodeBlock = ({ content }: { content: string }) => {
@@ -579,85 +630,22 @@ cat.frequency_type === 'MF' ? 'bg-[#d29922] text-[#f8e3a1]' : 'bg-[#238636] text
 </div>
 
 )), [categories]);
+  const handleArticleSelect = useCallback((art: Article) => {
+    setSelectedArticle(art);
+  }, []);
+
   const renderedArticles = useMemo(() => articles.map(art => {
-
-const metric = metrics[art.id];
-
-return (
-
-<button
-
-key={art.id}
-aria-pressed={selectedArticle?.id === art.id}
-className={`w-full text-left border p-4 rounded-md transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:border-transparent ${
-
-selectedArticle?.id === art.id
-
-? 'bg-[#1f242c] border-[#58a6ff]'
-
-: 'bg-[#0d1117] border-[#30363d] hover:bg-[#161b22]'
-
-}`}
-
-onClick={() => setSelectedArticle(art)}
-
->
-
-<div className="flex flex-wrap justify-between items-center gap-2 mb-2">
-
-<span className="text-xs text-[#58a6ff] font-mono bg-[#1f242c] px-2 py-0.5 rounded">
-
-/{art.slug}
-
-</span>
-
-<div className="flex gap-2">
-
-<span className="text-[10px] bg-[#238636]/20 text-[#56d364] px-2 py-0.5 rounded border border-[#238636]/40">
-
-Logic: Valid
-
-</span>
-
-<span className="text-[10px] bg-[#238636]/20 text-[#56d364] px-2 py-0.5 rounded border border-[#238636]/40">
-
-Fact: Verified
-
-</span>
-
-</div>
-
-</div>
-
-
-
-<h3 className="text-base font-bold text-[#f0f6fc] mb-1">{art.title}</h3>
-
-<p className="text-sm text-[#8b949e] line-clamp-2">{art.summary}</p>
-
-
-
-{metric && (
-
-<div className="mt-3 pt-3 border-t border-[#21262d] flex flex-wrap gap-4 text-xs text-[#8b949e] font-mono">
-
-<span>Views: <strong className="text-[#c9d1d9]">{metric.views}</strong></span>
-
-<span>Clicks: <strong className="text-[#c9d1d9]">{metric.clicks}</strong></span>
-
-<span>Avg Read: <strong className="text-[#c9d1d9]">{metric.avg_time_seconds}s</strong></span>
-
-<span>Bounce: <strong className="text-[#ff7b72]">{Math.round(metric.bounce_rate * 100)}%</strong></span>
-
-</div>
-
-)}
-
-</button>
-
-);
-
-}), [articles, metrics, selectedArticle?.id]);
+    const metric = metrics[art.id];
+    return (
+      <ArticleItem
+        key={art.id}
+        art={art}
+        metric={metric}
+        isSelected={selectedArticle?.id === art.id}
+        onSelect={handleArticleSelect}
+      />
+    );
+  }), [articles, metrics, selectedArticle?.id, handleArticleSelect]);
   // ⚡ Bolt: Memoize expensive map operations for frequent simLog updates
   const renderedSimLog = useMemo(() => simLog.map((logStr, i) => <div key={i}>{logStr}</div>), [simLog]);
   const renderedLogs = useMemo(() => logs.map(log => (
