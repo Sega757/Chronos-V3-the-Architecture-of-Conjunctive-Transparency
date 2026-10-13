@@ -130,7 +130,11 @@ const CodeBlock = ({ content }: { content: string }) => {
   const [isCopied, setIsCopied] = useState(false);
   return (
     <div className="relative group">
-      <pre className="text-xs bg-[#161b22] p-3 rounded overflow-x-auto text-[#7ee787] font-mono pr-16">
+      <pre
+        className="text-xs bg-[#161b22] p-3 rounded overflow-x-auto text-[#7ee787] font-mono pr-16 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff]"
+        tabIndex={0}
+        aria-label="Code snippet"
+      >
         <code>{content}</code>
       </pre>
       <button
@@ -1144,7 +1148,13 @@ SCCS Real-time Output Terminal
 
 
 
-<div className="h-64 overflow-y-auto font-mono text-xs text-[#39d353] flex flex-col gap-2" role="log" aria-live="polite">
+<div
+  className="h-64 overflow-y-auto font-mono text-xs text-[#39d353] flex flex-col gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff]"
+  role="log"
+  aria-live="polite"
+  tabIndex={0}
+  aria-label="Terminal output log"
+>
 
 {simLog.length === 0 ? (
 
@@ -1212,7 +1222,11 @@ Forensic Reasoning Ledger (L-E-J-D-A-S)
 
 
 
-<div className="flex flex-col gap-4 max-h-[450px] overflow-y-auto">
+<div
+  className="flex flex-col gap-4 max-h-[450px] overflow-y-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] p-1"
+  tabIndex={0}
+  aria-label="Forensic reasoning ledger logs"
+>
 
 {renderedLogs}
 
