@@ -74,6 +74,7 @@ app.get('/api/articles', async (req, res) => {
             SELECT a.id, a.title, a.slug, a.summary, a.status, a.views_count, a.published_at, c.name as category_name, c.frequency_type
             FROM articles a
             LEFT JOIN categories c ON a.category_id = c.id
+            WHERE a.status = 'published'
             ORDER BY a.published_at DESC
         `);
         res.json(result.rows);
@@ -90,7 +91,7 @@ app.get('/api/articles/slug/:slug', async (req, res) => {
             SELECT a.*, c.name as category_name, c.frequency_type
             FROM articles a
             LEFT JOIN categories c ON a.category_id = c.id
-            WHERE a.slug = $1
+            WHERE a.slug = $1 AND a.status = 'published'
         `, [slug]);
 
         if (articleResult.rows.length === 0) {
@@ -117,7 +118,13 @@ app.get('/api/articles/:id/blocks', async (req, res) => {
             return res.status(400).json({ error: 'Invalid ID format' });
         }
 
-        const result = await pool.query('SELECT * FROM article_blocks WHERE article_id = $1 ORDER BY position ASC', [articleId]);
+        const result = await pool.query(`
+            SELECT b.*
+            FROM article_blocks b
+            JOIN articles a ON b.article_id = a.id
+            WHERE b.article_id = $1 AND a.status = 'published'
+            ORDER BY b.position ASC
+        `, [articleId]);
         res.json(result.rows);
     } catch (err) {
         console.error('API Error:', err);
