@@ -610,11 +610,11 @@ setIsSimulating(false);
 
 <span className="text-xs text-[#8b949e] font-mono">ID: 0{cat.id}</span>
 
-<span className={`text-[10px] px-2 py-0.5 rounded-full font-mono ${
+<span className={`text-[10px] px-2 py-0.5 rounded-full font-mono border ${
 
-cat.frequency_type === 'HF' ? 'bg-[#da3637] text-[#ff7b72]' :
+cat.frequency_type === 'HF' ? 'bg-[#da3637]/20 border-[#da3637]/40 text-[#ff7b72]' :
 
-cat.frequency_type === 'MF' ? 'bg-[#d29922] text-[#f8e3a1]' : 'bg-[#238636] text-[#56d364]'
+cat.frequency_type === 'MF' ? 'bg-[#d29922]/20 border-[#d29922]/40 text-[#f8e3a1]' : 'bg-[#238636]/20 border-[#238636]/40 text-[#56d364]'
 
 }`}>
 

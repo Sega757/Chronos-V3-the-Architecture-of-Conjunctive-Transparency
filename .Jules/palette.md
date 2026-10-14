@@ -33,3 +33,7 @@
 ## 2024-10-13 - Scrollable Container Keyboard Accessibility
 **Learning:** Found that containers with `overflow-auto` (like code blocks, terminal logs, and ledgers) lack inherently focusable children and are unreachable via keyboard navigation. This traps keyboard users who cannot scroll to read hidden content.
 **Action:** Always make scrollable containers explicitly focusable by adding `tabIndex={0}`, an appropriate `aria-label`, and clear `focus-visible:ring-2` outline styles so users can tab to them and use arrow keys to scroll.
+
+## 2024-10-14 - Improve Badge Color Contrast
+**Learning:** Solid bright backgrounds (like solid red or solid yellow) paired with slightly lighter or similarly bright text (like light red or light yellow) on badges severely violate WCAG color contrast guidelines, making them very difficult to read for visually impaired users.
+**Action:** Instead of using solid bright backgrounds for badges, use a semi-transparent background (e.g., `bg-opacity-20` or equivalent like `/20` in Tailwind) combined with a solid border of the same color. This preserves the semantic meaning of the color while significantly improving readability against the dark theme.
