@@ -7,6 +7,7 @@ const { Pool } = require('pg');
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const path = require('path');
+const crypto = require('crypto');
 const { sccsQueue } = require('./modules/scheduler/queue');
 
 const app = express();
@@ -135,7 +136,15 @@ app.get('/api/articles/:id/blocks', async (req, res) => {
 app.get('/api/logs', async (req, res) => {
     // 🛡️ Sentinel: Add authentication check for sensitive logs endpoint
     const apiKey = req.headers['x-api-key'];
-    if (!apiKey || apiKey !== process.env.ADMIN_API_KEY) {
+
+    if (!apiKey || !process.env.ADMIN_API_KEY) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const providedKeyBuffer = crypto.createHash('sha256').update(String(apiKey)).digest();
+    const expectedKeyBuffer = crypto.createHash('sha256').update(String(process.env.ADMIN_API_KEY)).digest();
+
+    if (!crypto.timingSafeEqual(providedKeyBuffer, expectedKeyBuffer)) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
