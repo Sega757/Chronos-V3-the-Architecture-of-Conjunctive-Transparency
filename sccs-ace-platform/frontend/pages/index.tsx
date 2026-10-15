@@ -196,6 +196,45 @@ const ArticleItem = React.memo(({ art, isSelected, metric, onClick }: { art: Art
   );
 });
 
+// ⚡ Bolt: Extract log item to React.memo component to prevent re-evaluation of unchanged logs
+const LogItem = React.memo(({ log }: { log: GenerationLog }) => (
+  <div className="bg-[#0d1117] border border-[#21262d] p-3 rounded text-xs font-mono">
+    <div className="flex justify-between items-center mb-2 border-b border-[#21262d] pb-2 text-[#8b949e]">
+      <span>Log ID: {log.id}</span>
+      <span>{log.created_at}</span>
+    </div>
+
+    <p className="text-xs text-[#c9d1d9] mb-2 font-sans line-clamp-2">
+      <strong className="text-[#8b949e] font-mono">Prompt:</strong> {log.prompt_text}
+    </p>
+
+    <div className="space-y-1 text-[11px] text-[#8b949e]">
+      <div className="flex justify-between">
+        <span>Model Host:</span>
+        <span className="text-[#58a6ff]">{log.model_used}</span>
+      </div>
+      <div className="flex justify-between">
+        <span>Execution Time:</span>
+        <span className="text-[#7ee787]">{log.execution_time_ms} ms</span>
+      </div>
+      <div className="flex justify-between">
+        <span>Status Badge:</span>
+        <span className="text-[#3fb950] uppercase font-bold">{log.status}</span>
+      </div>
+    </div>
+
+    <div className="mt-2 bg-[#161b22] p-2 rounded border border-[#21262d] flex flex-col gap-1 text-[10px] text-[#8b949e]">
+      <div className="truncate">
+        <strong>Prompt Hash:</strong> <span className="text-[#e3b341]">{log.prompt_hash}</span>
+      </div>
+      <div className="truncate">
+        <strong>Merkle Root:</strong> <span className="text-[#e3b341]">0xae77d01bc1e34cb9de3347c617e9...</span>
+      </div>
+    </div>
+  </div>
+));
+LogItem.displayName = 'LogItem';
+
 export default function SCCSControlPanel() {
 
 
@@ -642,77 +681,8 @@ cat.frequency_type === 'MF' ? 'bg-[#d29922]/20 border-[#d29922]/40 text-[#f8e3a1
   )), [articles, metrics, selectedArticle?.id, handleArticleClick]);
   // ⚡ Bolt: Memoize expensive map operations for frequent simLog updates
   const renderedSimLog = useMemo(() => simLog.map((logStr, i) => <div key={i}>{logStr}</div>), [simLog]);
-  const renderedLogs = useMemo(() => logs.map(log => (
 
-<div key={log.id} className="bg-[#0d1117] border border-[#21262d] p-3 rounded text-xs font-mono">
-
-<div className="flex justify-between items-center mb-2 border-b border-[#21262d] pb-2 text-[#8b949e]">
-
-<span>Log ID: {log.id}</span>
-
-<span>{log.created_at}</span>
-
-</div>
-
-
-
-<p className="text-xs text-[#c9d1d9] mb-2 font-sans line-clamp-2">
-
-<strong className="text-[#8b949e] font-mono">Prompt:</strong> {log.prompt_text}
-
-</p>
-
-
-
-<div className="space-y-1 text-[11px] text-[#8b949e]">
-
-<div className="flex justify-between">
-
-<span>Model Host:</span>
-
-<span className="text-[#58a6ff]">{log.model_used}</span>
-
-</div>
-
-<div className="flex justify-between">
-
-<span>Execution Time:</span>
-
-<span className="text-[#7ee787]">{log.execution_time_ms} ms</span>
-
-</div>
-
-<div className="flex justify-between">
-
-<span>Status Badge:</span>
-
-<span className="text-[#3fb950] uppercase font-bold">{log.status}</span>
-
-</div>
-
-</div>
-
-
-
-<div className="mt-2 bg-[#161b22] p-2 rounded border border-[#21262d] flex flex-col gap-1 text-[10px] text-[#8b949e]">
-
-<div className="truncate">
-
-<strong>Prompt Hash:</strong> <span className="text-[#e3b341]">{log.prompt_hash}</span>
-
-</div>
-
-<div className="truncate">
-
-<strong>Merkle Root:</strong> <span className="text-[#e3b341]">0xae77d01bc1e34cb9de3347c617e9...</span>
-
-</div>
-
-</div>
-
-</div>
-
-)), [logs]);
+  const renderedLogs = useMemo(() => logs.map(log => <LogItem key={log.id} log={log} />), [logs]);
 
   // ⚡ Bolt: Memoize static list rendering during simulation updates to prevent VDOM reconciliation
   const renderedSelectedArticleBlocks = useMemo(() => selectedArticle?.blocks?.map(blk => (
