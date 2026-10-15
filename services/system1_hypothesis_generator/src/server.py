@@ -55,9 +55,11 @@ class HypothesisGeneratorServicer(system1_hypothesis_pb2_grpc.HypothesisGenerato
         except InvalidRequestError as exc:
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, str(exc))
         except GenerationBackendError as exc:
-            context.abort(grpc.StatusCode.UNAVAILABLE, str(exc))
+            logger.error("GenerationBackendError in GenerateHypotheses: %s", exc)
+            context.abort(grpc.StatusCode.UNAVAILABLE, "Internal server error")
         except SigningError as exc:
-            context.abort(grpc.StatusCode.INTERNAL, str(exc))
+            logger.error("SigningError in GenerateHypotheses: %s", exc)
+            context.abort(grpc.StatusCode.INTERNAL, "Internal server error")
         return system1_hypothesis_pb2.HypothesisResponse(
             candidates=candidates,
             batch_id=str(uuid.uuid4()),
@@ -70,10 +72,12 @@ class HypothesisGeneratorServicer(system1_hypothesis_pb2_grpc.HypothesisGenerato
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, str(exc))
             return
         except GenerationBackendError as exc:
-            context.abort(grpc.StatusCode.UNAVAILABLE, str(exc))
+            logger.error("GenerationBackendError in StreamHypotheses: %s", exc)
+            context.abort(grpc.StatusCode.UNAVAILABLE, "Internal server error")
             return
         except SigningError as exc:
-            context.abort(grpc.StatusCode.INTERNAL, str(exc))
+            logger.error("SigningError in StreamHypotheses: %s", exc)
+            context.abort(grpc.StatusCode.INTERNAL, "Internal server error")
             return
         for candidate in candidates:
             yield candidate

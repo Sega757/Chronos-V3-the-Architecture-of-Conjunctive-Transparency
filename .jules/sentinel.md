@@ -38,3 +38,7 @@
 **Vulnerability:** The `/api/logs` endpoint used a simple string comparison (`!==`) for the `ADMIN_API_KEY`, making it susceptible to timing attacks. An attacker could potentially guess the key character by character by measuring the response time.
 **Learning:** Standard string comparisons in JavaScript exit early as soon as a mismatch is found. This leaks information about the length and content of the expected string.
 **Prevention:** Always use a constant-time comparison method (e.g., `crypto.timingSafeEqual`) after hashing both the expected and provided secrets to a uniform length to securely compare sensitive strings.
+## 2026-12-15 - [Information Disclosure] Prevent Exposing Raw gRPC Exceptions
+**Vulnerability:** The gRPC endpoints directly returned raw exception strings (`str(exc)`) via `context.abort`, exposing internal error details to clients.
+**Learning:** Passing raw internal exception strings over RPC can leak file paths, library internals, or state details to callers.
+**Prevention:** Internal errors should be logged server-side (e.g. using `logger.error`) while returning a generic 'Internal server error' message to the gRPC client.
