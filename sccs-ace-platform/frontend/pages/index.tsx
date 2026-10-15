@@ -1068,17 +1068,24 @@ Clear Terminal
 
 {/* Real-time Telemetry Monitor */}
 
-<div className="grid grid-cols-2 gap-3">
+<div className="grid grid-cols-2 gap-3" aria-live="polite">
 
 <div className="bg-[#0d1117] border border-[#30363d] p-3 rounded">
 
 <span className="text-xs text-[#8b949e] block">Shannon Entropy H(X)</span>
 
+<div className="flex items-center gap-2">
 <span className={`text-lg font-mono font-bold ${simEntropy > 2.20 ? 'text-[#f85149]' : 'text-[#56d364]'}`}>
 
 {simEntropy.toFixed(3)}
 
 </span>
+{simEntropy > 2.20 && (
+  <span className="text-[10px] bg-[#f85149]/20 text-[#ff7b72] px-1.5 py-0.5 rounded border border-[#f85149]/40" role="status">
+    Warning
+  </span>
+)}
+</div>
 
 <span className="text-[10px] text-[#8b949e] block mt-1">Metacognitive Trigger: &gt; 2.20</span>
 
@@ -1090,11 +1097,18 @@ Clear Terminal
 
 <span className="text-xs text-[#8b949e] block">Huber Residual Delta</span>
 
+<div className="flex items-center gap-2">
 <span className={`text-lg font-mono font-bold ${simHuber > 0.10 ? 'text-[#ff7b72]' : 'text-[#58a6ff]'}`}>
 
 {simHuber.toFixed(4)}
 
 </span>
+{simHuber > 0.10 && (
+  <span className="text-[10px] bg-[#da3637]/20 text-[#ff7b72] px-1.5 py-0.5 rounded border border-[#da3637]/40" role="status">
+    Warning
+  </span>
+)}
+</div>
 
 <span className="text-[10px] text-[#8b949e] block mt-1">Noise Target Delta: &lt; 0.100</span>
 
