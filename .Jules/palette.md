@@ -37,3 +37,7 @@
 ## 2024-10-14 - Improve Badge Color Contrast
 **Learning:** Solid bright backgrounds (like solid red or solid yellow) paired with slightly lighter or similarly bright text (like light red or light yellow) on badges severely violate WCAG color contrast guidelines, making them very difficult to read for visually impaired users.
 **Action:** Instead of using solid bright backgrounds for badges, use a semi-transparent background (e.g., `bg-opacity-20` or equivalent like `/20` in Tailwind) combined with a solid border of the same color. This preserves the semantic meaning of the color while significantly improving readability against the dark theme.
+
+## 2026-10-15 - Color-Only State Changes in Telemetry
+**Learning:** Found that dynamic telemetry monitors in the SCCS platform relied solely on text color changes (e.g., turning red) to indicate critical threshold breaches. This violates WCAG 1.4.1 (Use of Color) and provides no feedback to screen readers since the values update dynamically.
+**Action:** Always wrap real-time metric containers in `aria-live="polite"` and provide a secondary indicator (like a text-based Warning badge with `role="status"`) to ensure state changes are conveyed semantically and visually beyond just color.
