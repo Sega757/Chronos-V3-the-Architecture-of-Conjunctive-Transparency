@@ -58,7 +58,8 @@ class ChronosVerifierServicer(system2_verifier_pb2_grpc.ChronosVerifierServicer)
         except InvalidRequestError as exc:
             context.abort(grpc.StatusCode.INVALID_ARGUMENT, str(exc))
         except SigningError as exc:
-            context.abort(grpc.StatusCode.INTERNAL, str(exc))
+            logger.error("SigningError in Verify: %s", exc)
+            context.abort(grpc.StatusCode.INTERNAL, "Internal server error")
         return result
 
     def BatchVerify(self, request, context):
@@ -72,7 +73,8 @@ class ChronosVerifierServicer(system2_verifier_pb2_grpc.ChronosVerifierServicer)
             except InvalidRequestError as exc:
                 context.abort(grpc.StatusCode.INVALID_ARGUMENT, str(exc))
             except SigningError as exc:
-                context.abort(grpc.StatusCode.INTERNAL, str(exc))
+                logger.error("SigningError in BatchVerify: %s", exc)
+                context.abort(grpc.StatusCode.INTERNAL, "Internal server error")
 
         # merkle_leaf_hash.digest is already a SHA-256 leaf hash for each
         # result, so it is used directly as the batch's Merkle leaves.

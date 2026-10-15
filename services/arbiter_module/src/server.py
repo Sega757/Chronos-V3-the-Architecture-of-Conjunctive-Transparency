@@ -89,7 +89,8 @@ class MetaArbiterServicer(arbiter_pb2_grpc.MetaArbiterServicer):
                 }
             )
         except Exception as exc:  # noqa: BLE001
-            context.abort(grpc.StatusCode.INTERNAL, f"failed to sign decision for round {round_id}: {exc}")
+            logger.error(f"failed to sign decision for round {round_id}: {exc}")
+            context.abort(grpc.StatusCode.INTERNAL, "Internal server error")
             return
 
         return arbiter_pb2.ArbitrationDecision(
@@ -116,9 +117,11 @@ class MetaArbiterServicer(arbiter_pb2_grpc.MetaArbiterServicer):
                 round_id=request.round_id,
             )
         except UnknownRoundError as exc:
-            context.abort(grpc.StatusCode.NOT_FOUND, str(exc))
+            logger.error("UnknownRoundError in SubmitSample: %s", exc)
+            context.abort(grpc.StatusCode.NOT_FOUND, "Unknown round")
         except DuplicateSampleError as exc:
-            context.abort(grpc.StatusCode.ALREADY_EXISTS, str(exc))
+            logger.error("DuplicateSampleError in SubmitSample: %s", exc)
+            context.abort(grpc.StatusCode.ALREADY_EXISTS, "Duplicate sample")
 
         return arbiter_pb2.SampleAck(round_id=request.round_id, accepted=True)
 
