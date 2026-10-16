@@ -41,3 +41,7 @@
 ## 2026-10-15 - Color-Only State Changes in Telemetry
 **Learning:** Found that dynamic telemetry monitors in the SCCS platform relied solely on text color changes (e.g., turning red) to indicate critical threshold breaches. This violates WCAG 1.4.1 (Use of Color) and provides no feedback to screen readers since the values update dynamically.
 **Action:** Always wrap real-time metric containers in `aria-live="polite"` and provide a secondary indicator (like a text-based Warning badge with `role="status"`) to ensure state changes are conveyed semantically and visually beyond just color.
+
+## 2026-10-16 - Keyboard Accessibility for Scrollable Containers
+**Learning:** Scrollable containers (e.g., `overflow-x-auto`) that lack inherently focusable children cannot be navigated by keyboard users, trapping them or preventing them from viewing overflow content.
+**Action:** Explicitly make scrollable containers focusable by adding `tabIndex={0}`, an appropriate `aria-label`, and `focus-visible` outline styles.

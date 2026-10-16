@@ -6,7 +6,11 @@ export function renderBlock(block: any) {
             return <p className="text-base text-[#c9d1d9] leading-relaxed">{block.content}</p>;
         case 'code':
             return (
-                <div className="bg-[#161b22] border border-[#30363d] rounded-md p-4 overflow-x-auto">
+                <div
+                    className="bg-[#161b22] border border-[#30363d] rounded-md p-4 overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff]"
+                    tabIndex={0}
+                    aria-label="Code block"
+                >
                     <pre className="text-sm font-mono text-[#7ee787]">
                         <code>{block.content}</code>
                     </pre>
