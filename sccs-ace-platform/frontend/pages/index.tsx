@@ -725,7 +725,7 @@ cat.frequency_type === 'MF' ? 'bg-[#d29922]/20 border-[#d29922]/40 text-[#f8e3a1
 
 <div className="flex items-center gap-3">
 
-<div className="w-4 h-4 rounded-full bg-[#238636] animate-pulse" />
+<div className="w-4 h-4 rounded-full bg-[#238636] animate-pulse" title="System Online" role="status" aria-label="System Online" />
 
 <h1 className="text-xl font-bold tracking-tight text-[#f0f6fc]">
 
@@ -753,7 +753,7 @@ v3.2.0-Sovereign
 
 id="node-instance"
 
-className="bg-[#0d1117] border border-[#30363d] text-[#c9d1d9] rounded px-3 py-1 text-sm focus:outline-none focus:border-[#58a6ff]"
+className="bg-[#0d1117] border border-[#30363d] text-[#c9d1d9] rounded px-3 py-1 text-sm focus:outline-none focus:border-[#58a6ff] focus-visible:ring-2 focus-visible:ring-[#58a6ff]"
 
 value={activeSite?.id || ''}
 
@@ -990,7 +990,7 @@ aria-busy={isSimulating}
 
 {isSimulating && (
 
-<svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+<svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
 
 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
 
