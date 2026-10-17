@@ -45,3 +45,7 @@
 ## 2026-10-16 - Keyboard Accessibility for Scrollable Containers
 **Learning:** Scrollable containers (e.g., `overflow-x-auto`) that lack inherently focusable children cannot be navigated by keyboard users, trapping them or preventing them from viewing overflow content.
 **Action:** Explicitly make scrollable containers focusable by adding `tabIndex={0}`, an appropriate `aria-label`, and `focus-visible` outline styles.
+
+## 2026-10-18 - Visual Status Indicators
+**Learning:** Visual-only status indicators (like pulsing dots) provide no context to screen readers or users who don't understand the color code.
+**Action:** Always add semantic meaning via `role="status"`, `aria-label`, and `title` for hover tooltips to ensure accessibility for all users.
