@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import { GetServerSideProps } from 'next';
 import { renderBlock } from '../../lib/renderer';
 
@@ -28,9 +29,22 @@ interface Props {
 export default function ArticleODR({ article, error }: Props) {
   if (error || !article) {
     return (
-      <div className="min-h-screen bg-[#0d1117] text-[#f85149] font-sans p-6">
-        <h1 className="text-xl font-bold">Error 404: Knowledge Object Not Found</h1>
-        <p>{error || "Article does not exist."}</p>
+      <div className="min-h-screen bg-[#0d1117] text-[#c9d1d9] font-sans flex flex-col items-center justify-center p-6">
+        <Head>
+          <title>404: Knowledge Object Not Found - SCCS / ACE</title>
+        </Head>
+        <div className="bg-[#161b22] border border-[#30363d] border-dashed rounded-lg p-10 max-w-lg w-full text-center flex flex-col items-center">
+          <span className="text-5xl mb-6 block" aria-hidden="true">🚫</span>
+          <h1 className="text-xl font-bold text-[#f85149] mb-3">Error 404: Knowledge Object Not Found</h1>
+          <p className="text-sm text-[#8b949e] mb-8">{error || "The requested article does not exist or has been archived by the Chronos Verifier."}</p>
+          <Link
+            href="/"
+            className="bg-[#21262d] hover:bg-[#30363d] text-[#c9d1d9] px-6 py-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#161b22]"
+            aria-label="Return to SCCS Control Panel"
+          >
+            Return to Control Panel
+          </Link>
+        </div>
       </div>
     );
   }

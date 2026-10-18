@@ -49,3 +49,7 @@
 ## 2026-10-18 - Visual Status Indicators
 **Learning:** Visual-only status indicators (like pulsing dots) provide no context to screen readers or users who don't understand the color code.
 **Action:** Always add semantic meaning via `role="status"`, `aria-label`, and `title` for hover tooltips to ensure accessibility for all users.
+
+## 2026-10-18 - Missing Recovery Path in Error States
+**Learning:** Found that the 404 error state (e.g., when an article is not found) left users trapped without a clear Call-to-Action (CTA) to recover or return to the main interface, creating a dead-end experience.
+**Action:** Always provide a clear, accessible recovery CTA (like a 'Return Home' button/link) on empty or error states, ensuring it has proper focus and layout styles to match the design system.
