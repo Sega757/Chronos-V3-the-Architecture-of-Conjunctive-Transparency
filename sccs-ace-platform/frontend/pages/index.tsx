@@ -808,9 +808,24 @@ Node Configuration Overview
 
 <div className="bg-[#0d1117] p-3 rounded border border-[#21262d]">
 
-<span className="text-xs text-[#8b949e] block">State Engine Status</span>
+<span className="text-xs text-[#8b949e] block mb-1">State Engine Status</span>
 
-<span className="text-sm font-mono text-[#3fb950]">Active SCCS Gate</span>
+<div
+  className="flex items-center gap-2"
+  role="status"
+  aria-label={activeSite.is_active ? "Status: Active SCCS Gate" : "Status: Inactive SCCS Gate"}
+  title={activeSite.is_active ? "State Engine is currently active and processing" : "State Engine is inactive"}
+>
+  {activeSite.is_active && (
+    <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
+      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3fb950] opacity-75"></span>
+      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#3fb950]"></span>
+    </span>
+  )}
+  <span className={`text-sm font-mono ${activeSite.is_active ? 'text-[#3fb950]' : 'text-[#8b949e]'}`}>
+    {activeSite.is_active ? 'Active SCCS Gate' : 'Inactive SCCS Gate'}
+  </span>
+</div>
 
 </div>
 
