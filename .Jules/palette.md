@@ -49,3 +49,6 @@
 ## 2026-10-18 - Visual Status Indicators
 **Learning:** Visual-only status indicators (like pulsing dots) provide no context to screen readers or users who don't understand the color code.
 **Action:** Always add semantic meaning via `role="status"`, `aria-label`, and `title` for hover tooltips to ensure accessibility for all users.
+## 2026-10-19 - Pulsing Status Indicator Accessibility
+**Learning:** Found that pulsing status indicators relying purely on animation and color provide no context to screen readers or users who don't understand the color code.
+**Action:** Always add semantic meaning via `role="status"`, `aria-label`, and `title` for hover tooltips to ensure accessibility for all users, and hide purely visual animation elements with `aria-hidden="true"`.
