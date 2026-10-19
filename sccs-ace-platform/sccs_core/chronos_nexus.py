@@ -5,6 +5,7 @@ import argparse
 import sys
 import os
 import random
+import logging
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import chronos_interface_pb2
@@ -62,9 +63,9 @@ class RealityFilterServicer(chronos_interface_pb2_grpc.RealityFilterServicer):
                 merkle_root_hash=ko_data['merkle_root']
             )
         except Exception as e:
-             print(f"Sterilization failed: {e}")
+             logging.error(f"Sterilization failed: {e}")
              context.set_code(grpc.StatusCode.INTERNAL)
-             context.set_details(str(e))
+             context.set_details("Internal server error")
              return chronos_interface_pb2.KnowledgeObject()
 
 def serve():
