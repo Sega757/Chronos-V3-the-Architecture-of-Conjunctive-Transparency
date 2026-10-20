@@ -217,17 +217,27 @@ const LogItem = React.memo(({ log }: { log: GenerationLog }) => (
         <span>Execution Time:</span>
         <span className="text-[#7ee787]">{log.execution_time_ms} ms</span>
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <span>Status Badge:</span>
-        <span className="text-[#3fb950] uppercase font-bold">{log.status}</span>
+        <span
+          className={`px-2 py-0.5 rounded-full border text-[10px] uppercase font-bold ${
+            log.status === 'success'
+              ? 'bg-[#3fb950]/20 border-[#3fb950]/40 text-[#3fb950]'
+              : 'bg-[#f85149]/20 border-[#f85149]/40 text-[#ff7b72]'
+          }`}
+          role="status"
+          aria-label={`Status: ${log.status}`}
+        >
+          {log.status}
+        </span>
       </div>
     </div>
 
     <div className="mt-2 bg-[#161b22] p-2 rounded border border-[#21262d] flex flex-col gap-1 text-[10px] text-[#8b949e]">
-      <div className="truncate">
+      <div className="truncate" title={log.prompt_hash}>
         <strong>Prompt Hash:</strong> <span className="text-[#e3b341]">{log.prompt_hash}</span>
       </div>
-      <div className="truncate">
+      <div className="truncate" title="0xae77d01bc1e34cb9de3347c617e9b01f9e2b855">
         <strong>Merkle Root:</strong> <span className="text-[#e3b341]">0xae77d01bc1e34cb9de3347c617e9...</span>
       </div>
     </div>
@@ -621,6 +631,28 @@ setLogs(prev => [newLog, ...prev]);
 } else {
 
 appendLog('C-T Validation Failed. Rejecting state commit.');
+
+const errorLog: GenerationLog = {
+
+id: logs.length + 1,
+
+model_used: 'System-0-Meta-Arbiter',
+
+prompt_hash: '1b2a3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b',
+
+prompt_text: promptInput,
+
+response_text: 'Rejected state commit: C-T Validation Failed.',
+
+execution_time_ms: 125,
+
+status: 'error',
+
+created_at: new Date().toISOString().replace('T', ' ').substring(0, 19)
+
+};
+
+setLogs(prev => [errorLog, ...prev]);
 
 }
 
