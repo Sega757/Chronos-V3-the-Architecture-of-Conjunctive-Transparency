@@ -52,3 +52,7 @@
 ## 2026-10-19 - Pulsing Status Indicator Accessibility
 **Learning:** Found that pulsing status indicators relying purely on animation and color provide no context to screen readers or users who don't understand the color code.
 **Action:** Always add semantic meaning via `role="status"`, `aria-label`, and `title` for hover tooltips to ensure accessibility for all users, and hide purely visual animation elements with `aria-hidden="true"`.
+
+## 2026-10-20 - Missing Error Feedback & Dynamic Log Badges
+**Learning:** Found that when simulations failed, no feedback was appended to the terminal ledger, and status badges were statically hardcoded to green without semantic meaning. Relying on color alone without clear state indication is bad for a11y.
+**Action:** Always ensure both success and error paths push UI feedback, use dynamic classes for status colors, and wrap status indicators with `role="status"` and an `aria-label`.
