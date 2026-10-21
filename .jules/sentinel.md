@@ -42,3 +42,7 @@
 **Vulnerability:** The gRPC endpoints directly returned raw exception strings (`str(exc)`) via `context.abort`, exposing internal error details to clients.
 **Learning:** Passing raw internal exception strings over RPC can leak file paths, library internals, or state details to callers.
 **Prevention:** Internal errors should be logged server-side (e.g. using `logger.error`) while returning a generic 'Internal server error' message to the gRPC client.
+## 2026-12-25 - [Overly Permissive CORS Configuration]
+**Vulnerability:** The Express backend used `app.use(cors())` which defaults to allowing requests from any origin (`*`). This left the API vulnerable to Cross-Origin Resource Sharing (CORS) attacks if malicious domains sent requests on behalf of authenticated users.
+**Learning:** Default CORS configurations often optimize for convenience during development but are dangerous in production, as they bypass critical browser-level security checks designed to prevent cross-origin data exposure.
+**Prevention:** Always explicitly define the allowed `origin` in the CORS configuration (e.g., using an environment variable like `CORS_ORIGIN`) to restrict access exclusively to trusted domains.
