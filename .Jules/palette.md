@@ -52,3 +52,7 @@
 ## 2026-10-19 - Pulsing Status Indicator Accessibility
 **Learning:** Found that pulsing status indicators relying purely on animation and color provide no context to screen readers or users who don't understand the color code.
 **Action:** Always add semantic meaning via `role="status"`, `aria-label`, and `title` for hover tooltips to ensure accessibility for all users, and hide purely visual animation elements with `aria-hidden="true"`.
+
+## 2026-10-21 - Truncated Text Accessibility
+**Learning:** When truncating long text strings (such as hashes or IDs) in the UI using 'truncate' or 'line-clamp', the full content becomes inaccessible to screen readers and mouse users. This prevents users from reading the complete text.
+**Action:** Always provide a 'title' attribute with the full string value on truncated text elements so users can read the complete text on hover or via screen readers.

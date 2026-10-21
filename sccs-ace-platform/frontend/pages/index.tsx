@@ -182,7 +182,7 @@ const ArticleItem = React.memo(({ art, isSelected, metric, onClick }: { art: Art
       </div>
 
       <h3 className="text-base font-bold text-[#f0f6fc] mb-1">{art.title}</h3>
-      <p className="text-sm text-[#8b949e] line-clamp-2">{art.summary}</p>
+      <p className="text-sm text-[#8b949e] line-clamp-2" title={art.summary}>{art.summary}</p>
 
       {metric && (
         <div className="mt-3 pt-3 border-t border-[#21262d] flex flex-wrap gap-4 text-xs text-[#8b949e] font-mono">
@@ -204,7 +204,7 @@ const LogItem = React.memo(({ log }: { log: GenerationLog }) => (
       <span>{log.created_at}</span>
     </div>
 
-    <p className="text-xs text-[#c9d1d9] mb-2 font-sans line-clamp-2">
+    <p className="text-xs text-[#c9d1d9] mb-2 font-sans line-clamp-2" title={log.prompt_text}>
       <strong className="text-[#8b949e] font-mono">Prompt:</strong> {log.prompt_text}
     </p>
 
@@ -224,10 +224,10 @@ const LogItem = React.memo(({ log }: { log: GenerationLog }) => (
     </div>
 
     <div className="mt-2 bg-[#161b22] p-2 rounded border border-[#21262d] flex flex-col gap-1 text-[10px] text-[#8b949e]">
-      <div className="truncate">
+      <div className="truncate" title={log.prompt_hash}>
         <strong>Prompt Hash:</strong> <span className="text-[#e3b341]">{log.prompt_hash}</span>
       </div>
-      <div className="truncate">
+      <div className="truncate" title="0xae77d01bc1e34cb9de3347c617e9">
         <strong>Merkle Root:</strong> <span className="text-[#e3b341]">0xae77d01bc1e34cb9de3347c617e9...</span>
       </div>
     </div>
