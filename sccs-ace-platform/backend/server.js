@@ -24,7 +24,10 @@ const apiLimiter = rateLimit({
 
 
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    optionsSuccessStatus: 200
+}));
 app.use(express.json());
 
 // Database connection
