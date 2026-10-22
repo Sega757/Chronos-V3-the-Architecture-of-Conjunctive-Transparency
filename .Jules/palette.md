@@ -56,3 +56,7 @@
 ## 2026-10-21 - Truncated Text Accessibility
 **Learning:** When truncating long text strings (such as hashes or IDs) in the UI using 'truncate' or 'line-clamp', the full content becomes inaccessible to screen readers and mouse users. This prevents users from reading the complete text.
 **Action:** Always provide a 'title' attribute with the full string value on truncated text elements so users can read the complete text on hover or via screen readers.
+
+## 2026-10-23 - Prevent Dead-End Empty States and Errors
+**Learning:** Found that the dynamic article page (ODR Viewer) lacked a recovery call-to-action on its 404 error state. When a knowledge object fails to load, users are trapped on an error page without an explicit way to return to the main feed, creating a dead-end experience.
+**Action:** Always provide a clear, accessible recovery Call-to-Action (CTA) (e.g., a 'Return Home' link via next/link) on 404 error pages and empty states. Ensure it has proper layout (centered) and focus-visible accessibility styles to guide users back to safety.

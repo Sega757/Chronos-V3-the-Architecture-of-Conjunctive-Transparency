@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import { GetServerSideProps } from 'next';
 import { renderBlock } from '../../lib/renderer';
 
@@ -28,9 +29,15 @@ interface Props {
 export default function ArticleODR({ article, error }: Props) {
   if (error || !article) {
     return (
-      <div className="min-h-screen bg-[#0d1117] text-[#f85149] font-sans p-6">
-        <h1 className="text-xl font-bold">Error 404: Knowledge Object Not Found</h1>
-        <p>{error || "Article does not exist."}</p>
+      <div className="min-h-screen bg-[#0d1117] text-[#f85149] font-sans p-6 flex flex-col items-center justify-center text-center">
+        <h1 className="text-2xl font-bold mb-4">Error 404: Knowledge Object Not Found</h1>
+        <p className="mb-6 text-[#8b949e]">{error || "Article does not exist."}</p>
+        <Link
+          href="/"
+          className="bg-[#21262d] hover:bg-[#30363d] text-[#c9d1d9] px-4 py-2 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d1117]"
+        >
+          Return Home
+        </Link>
       </div>
     );
   }
