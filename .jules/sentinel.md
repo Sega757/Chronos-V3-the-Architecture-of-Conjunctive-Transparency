@@ -46,3 +46,8 @@
 **Vulnerability:** The Express backend used `app.use(cors())` which defaults to allowing requests from any origin (`*`). This left the API vulnerable to Cross-Origin Resource Sharing (CORS) attacks if malicious domains sent requests on behalf of authenticated users.
 **Learning:** Default CORS configurations often optimize for convenience during development but are dangerous in production, as they bypass critical browser-level security checks designed to prevent cross-origin data exposure.
 **Prevention:** Always explicitly define the allowed `origin` in the CORS configuration (e.g., using an environment variable like `CORS_ORIGIN`) to restrict access exclusively to trusted domains.
+
+## 2026-10-24 - [BOLA/IDOR on Metrics Endpoint]
+**Vulnerability:** The unauthenticated endpoint `/api/metrics` in `sccs-ace-platform/backend/server.js` returned all metrics from the database without checking if the associated article was published. This allowed unauthenticated users to enumerate and fetch metrics for draft or archived articles.
+**Learning:** Returning aggregated or secondary data from a database without checking the parent object's visibility state creates a Broken Object Level Authorization (BOLA) / Information Disclosure condition.
+**Prevention:** Always enforce explicit access controls on object-fetching APIs. For unauthenticated public APIs, strictly filter queries by visibility states (e.g., adding `WHERE a.status = 'published'`) and enforce these checks using table joins when fetching secondary objects (like `metrics`).
