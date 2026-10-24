@@ -196,6 +196,60 @@ const ArticleItem = React.memo(({ art, isSelected, metric, onClick }: { art: Art
   );
 });
 
+// ⚡ Bolt: Extract PromptEditor to prevent massive component re-renders on keystrokes
+const PromptEditor = React.memo(({ isSimulating, onExecute }: { isSimulating: boolean, onExecute: (prompt: string) => void }) => {
+  const [promptInput, setPromptInput] = useState('Verify the transaction tick baseline and execute rebalance order.');
+  return (
+    <div>
+      <label htmlFor="prompt-input" className="flex justify-between items-center text-xs text-[#8b949e] mb-1">
+        <span>Simulate Prompts Injection or Core Query:</span>
+        <span className="text-[10px] opacity-70 border border-[#30363d] px-1.5 py-0.5 rounded bg-[#161b22]" aria-hidden="true">⌘/Ctrl + Enter</span>
+      </label>
+      <textarea
+        id="prompt-input"
+        className="w-full bg-[#0d1117] border border-[#30363d] rounded p-2 text-sm text-[#c9d1d9] font-mono focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+        rows={3}
+        value={promptInput}
+        onChange={(e) => setPromptInput(e.target.value)}
+        onKeyDown={(e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            if (!isSimulating && promptInput.trim()) {
+              onExecute(promptInput);
+            }
+          }
+        }}
+        placeholder="Insert execution prompt..."
+        disabled={isSimulating}
+        maxLength={250}
+        aria-describedby="prompt-char-count"
+      />
+      <div id="prompt-char-count" className="text-right text-[10px] mt-1" aria-live="polite">
+        <span className={promptInput.length >= 250 ? "text-[#ff7b72] font-bold" : promptInput.length >= 200 ? "text-[#e3b341]" : "text-[#8b949e]"}>
+          {promptInput.length} / 250 characters
+        </span>
+      </div>
+      <div className="flex flex-wrap gap-2 mt-4">
+        <button
+          className="bg-[#238636] hover:bg-[#2ea043] text-white font-bold py-2 px-4 rounded text-sm transition-all flex-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#161b22]"
+          onClick={() => onExecute(promptInput)}
+          disabled={isSimulating || !promptInput.trim()}
+          title={!promptInput.trim() ? "Please enter a prompt to execute" : isSimulating ? "Simulation in progress..." : "Execute Audit Pulse"}
+          aria-busy={isSimulating}
+        >
+          {isSimulating && (
+            <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          )}
+          <span>{isSimulating ? 'Processing Pulse...' : 'Execute Audit Pulse'}</span>
+        </button>
+      </div>
+    </div>
+  );
+});
+PromptEditor.displayName = 'PromptEditor';
+
 // ⚡ Bolt: Extract log item to React.memo component to prevent re-evaluation of unchanged logs
 const LogItem = React.memo(({ log }: { log: GenerationLog }) => (
   <div className="bg-[#0d1117] border border-[#21262d] p-3 rounded text-xs font-mono">
@@ -274,8 +328,6 @@ const [metrics, setMetrics] = useState<Record<number, MetricSet>>({});
 
 
 // Simulation Interactive State
-
-const [promptInput, setPromptInput] = useState('Verify the transaction tick baseline and execute rebalance order.');
 
 const [isSimulating, setIsSimulating] = useState(false);
 
@@ -494,7 +546,7 @@ setSelectedArticle(seededArticles[0]);
 
 // --- SIMULATION SEQUENCE PIPELINE (5-PHASE BI-CAMERAL PULSE) ---
 
-const runVerificationSimulation = async () => {
+const runVerificationSimulation = async (promptInput: string) => {
 
 setIsSimulating(true);
 
@@ -945,83 +997,12 @@ Verification Engine Simulation (System 0 &amp; 2)
 
 <div className="flex flex-col gap-4">
 
-<div>
-
-<label htmlFor="prompt-input" className="flex justify-between items-center text-xs text-[#8b949e] mb-1"><span>Simulate Prompts Injection or Core Query:</span><span className="text-[10px] opacity-70 border border-[#30363d] px-1.5 py-0.5 rounded bg-[#161b22]" aria-hidden="true">⌘/Ctrl + Enter</span></label>
-
-<textarea
-
-id="prompt-input"
-
-className="w-full bg-[#0d1117] border border-[#30363d] rounded p-2 text-sm text-[#c9d1d9] font-mono focus:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
-
-rows={3}
-
-value={promptInput}
-
-onChange={(e) => setPromptInput(e.target.value)}
-
-onKeyDown={(e) => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-    if (!isSimulating && promptInput.trim()) {
-      runVerificationSimulation();
-    }
-  }
-}}
-
-placeholder="Insert execution prompt..."
-
-
-disabled={isSimulating}
-maxLength={250}
-aria-describedby="prompt-char-count"
-/>
-
-<div id="prompt-char-count" className="text-right text-[10px] mt-1" aria-live="polite">
-<span className={promptInput.length >= 250 ? "text-[#ff7b72] font-bold" : promptInput.length >= 200 ? "text-[#e3b341]" : "text-[#8b949e]"}>
-{promptInput.length} / 250 characters
-</span>
-</div>
-
-</div>
-
-
+<PromptEditor isSimulating={isSimulating} onExecute={runVerificationSimulation} />
 
 <div className="flex flex-wrap gap-2">
-
-<button
-
-className="bg-[#238636] hover:bg-[#2ea043] text-white font-bold py-2 px-4 rounded text-sm transition-all flex-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#161b22]"
-
-onClick={runVerificationSimulation}
-
-disabled={isSimulating || !promptInput.trim()}
-
-title={!promptInput.trim() ? "Please enter a prompt to execute" : isSimulating ? "Simulation in progress..." : "Execute Audit Pulse"}
-
-aria-busy={isSimulating}
-
->
-
-{isSimulating && (
-
-<svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-
-<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-
-<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-
-</svg>
-
-)}
-
-<span>{isSimulating ? 'Processing Pulse...' : 'Execute Audit Pulse'}</span>
-
-</button>
-
 <button
 aria-label="Clear terminal output"
-className="bg-[#30363d] hover:bg-[#8b949e]/20 text-[#c9d1d9] py-2 px-4 rounded text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#161b22]"
+className="bg-[#30363d] hover:bg-[#8b949e]/20 text-[#c9d1d9] py-2 px-4 rounded text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#161b22] flex-1"
 
 onClick={() => {
 
@@ -1046,7 +1027,6 @@ title={simLog.length === 0 ? "Terminal is already clear" : "Clear terminal outpu
 Clear Terminal
 
 </button>
-
 </div>
 
 
