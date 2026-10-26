@@ -35,3 +35,6 @@
 ## 2026-11-03 - Extract Complex JSX to Memoized Components
 **Learning:** Mapping over an array and creating complex inline JSX elements (like the Forensic Logs in `SCCSControlPanel`) within a large component causes slow renders, even if `useMemo` is used, because the massive JSX still needs to be evaluated when the array changes (like during the simulation when a new log is pushed).
 **Action:** Extract the inline JSX block into a separate `React.memo` component (e.g., `LogItem`).
+## 2026-11-04 - Extract Interactive Text Input to Prevent Root Re-renders
+**Learning:** Hoisting high-frequency interactive state (like keystrokes in a textarea) to the root of a large component causes the entire application to re-render on every keystroke, degrading typing performance significantly.
+**Action:** Extract text inputs and their immediate surrounding UI into localized, memoized components to isolate state changes and prevent parent re-renders.
