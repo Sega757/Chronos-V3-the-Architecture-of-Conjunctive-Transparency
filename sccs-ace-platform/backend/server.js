@@ -164,7 +164,12 @@ app.get('/api/logs', async (req, res) => {
 
 app.get('/api/metrics', async (req, res) => {
     try {
-        const result = await pool.query('SELECT article_id, views, clicks, avg_time_seconds, bounce_rate FROM metrics');
+        const result = await pool.query(`
+            SELECT m.article_id, m.views, m.clicks, m.avg_time_seconds, m.bounce_rate
+            FROM metrics m
+            JOIN articles a ON m.article_id = a.id
+            WHERE a.status = 'published'
+        `);
         // Transform into a map by article_id for the frontend
         const metricsMap = {};
         result.rows.forEach(row => {
