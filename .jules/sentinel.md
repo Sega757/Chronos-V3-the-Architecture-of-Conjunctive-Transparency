@@ -46,3 +46,7 @@
 **Vulnerability:** The Express backend used `app.use(cors())` which defaults to allowing requests from any origin (`*`). This left the API vulnerable to Cross-Origin Resource Sharing (CORS) attacks if malicious domains sent requests on behalf of authenticated users.
 **Learning:** Default CORS configurations often optimize for convenience during development but are dangerous in production, as they bypass critical browser-level security checks designed to prevent cross-origin data exposure.
 **Prevention:** Always explicitly define the allowed `origin` in the CORS configuration (e.g., using an environment variable like `CORS_ORIGIN`) to restrict access exclusively to trusted domains.
+## 2026-12-26 - [BOLA/IDOR on Metrics API]
+**Vulnerability:** The `/api/metrics` endpoint returned aggregated secondary data (metrics) for all articles without verifying the internal state (`status = 'published'`) of the parent article.
+**Learning:** Even when returning secondary/aggregated data that doesn't directly expose sensitive user info, failing to check the visibility state of the parent object can lead to BOLA and information disclosure regarding hidden entities.
+**Prevention:** Always enforce internal state constraints by joining parent tables in SQL queries when fetching secondary data associated with objects that have visibility states.
