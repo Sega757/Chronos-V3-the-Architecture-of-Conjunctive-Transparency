@@ -935,9 +935,15 @@ Category Matrix & Link Topology
 </h2>
 
 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-
-{renderedCategories}
-
+{categories.length > 0 ? (
+  renderedCategories
+) : (
+  <div className="md:col-span-3 border border-[#30363d] border-dashed rounded-lg p-10 flex flex-col items-center justify-center text-center">
+    <span className="text-4xl mb-4" aria-hidden="true">🗂️</span>
+    <h2 className="text-sm font-semibold uppercase text-[#8b949e] mb-2 tracking-wider">No Categories Found</h2>
+    <p className="text-xs text-[#8b949e]">System topology currently unmapped. No categories available.</p>
+  </div>
+)}
 </div>
 
 </div>
@@ -955,9 +961,21 @@ Autonomous Content Feed (SCCS Verified PCOs)
 </h2>
 
 <div className="flex flex-col gap-3">
-
-{renderedArticles}
-
+{articles.length > 0 ? (
+  renderedArticles
+) : (
+  <div className="border border-[#30363d] border-dashed rounded-lg p-10 flex flex-col items-center justify-center text-center">
+    <span className="text-4xl mb-4" aria-hidden="true">📰</span>
+    <h2 className="text-sm font-semibold uppercase text-[#8b949e] mb-2 tracking-wider">Empty Content Feed</h2>
+    <p className="text-xs text-[#8b949e] mb-4">No verified PCOs available. Awaiting new pulses from the SCCS Engine.</p>
+    <button
+      className="bg-[#21262d] hover:bg-[#30363d] text-[#c9d1d9] px-4 py-2 rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d1117]"
+      onClick={() => document.getElementById('prompt-input')?.focus()}
+    >
+      Generate Content
+    </button>
+  </div>
+)}
 </div>
 
 </div>
@@ -1162,22 +1180,34 @@ renderedSimLog
 
 <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-5">
 
-<h2 className="text-sm font-semibold uppercase text-[#8b949e] mb-4 tracking-wider">
-
-Forensic Reasoning Ledger (L-E-J-D-A-S)
-
-</h2>
-
-
+<div className="flex justify-between items-center mb-4">
+  <h2 className="text-sm font-semibold uppercase text-[#8b949e] tracking-wider m-0">
+    Forensic Reasoning Ledger (L-E-J-D-A-S)
+  </h2>
+  <button
+    className="text-xs bg-[#30363d] hover:bg-[#8b949e]/20 text-[#c9d1d9] px-2 py-1 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff]"
+    onClick={() => setLogs([])}
+    disabled={logs.length === 0}
+    title={logs.length === 0 ? "Ledger is already empty" : "Clear forensic ledger"}
+  >
+    Clear Ledger
+  </button>
+</div>
 
 <div
   className="flex flex-col gap-4 max-h-[450px] overflow-y-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] p-1"
   tabIndex={0}
   aria-label="Forensic reasoning ledger logs"
 >
-
-{renderedLogs}
-
+  {logs.length > 0 ? (
+    renderedLogs
+  ) : (
+    <div className="border border-[#30363d] border-dashed rounded-lg p-10 flex flex-col items-center justify-center text-center mt-2">
+      <span className="text-4xl mb-4" aria-hidden="true">⚖️</span>
+      <h2 className="text-sm font-semibold uppercase text-[#8b949e] mb-2 tracking-wider">Empty Forensic Ledger</h2>
+      <p className="text-xs text-[#8b949e]">No reasoning logs recorded yet. Execute an Audit Pulse to populate.</p>
+    </div>
+  )}
 </div>
 
 </div>
