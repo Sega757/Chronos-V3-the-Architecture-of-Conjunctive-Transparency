@@ -46,3 +46,8 @@
 **Vulnerability:** The Express backend used `app.use(cors())` which defaults to allowing requests from any origin (`*`). This left the API vulnerable to Cross-Origin Resource Sharing (CORS) attacks if malicious domains sent requests on behalf of authenticated users.
 **Learning:** Default CORS configurations often optimize for convenience during development but are dangerous in production, as they bypass critical browser-level security checks designed to prevent cross-origin data exposure.
 **Prevention:** Always explicitly define the allowed `origin` in the CORS configuration (e.g., using an environment variable like `CORS_ORIGIN`) to restrict access exclusively to trusted domains.
+
+## 2024-05-24 - Information Disclosure in Aggregation APIs
+**Vulnerability:** The `/api/metrics` endpoint fetches aggregated metrics without joining the parent `articles` table to enforce state constraints (like `status = 'published'`). This allows unauthorized access to secondary metrics associated with unpublished or hidden items.
+**Learning:** Always explicitly project columns and enforce parent constraints on unauthenticated APIs returning list or aggregated data to prevent Broken Object Level Authorization (BOLA) and Information Disclosure.
+**Prevention:** Use SQL `JOIN`s to filter out related secondary data associated with unpublished/unauthorized parent items.
