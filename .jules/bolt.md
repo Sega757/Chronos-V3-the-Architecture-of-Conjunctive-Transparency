@@ -38,3 +38,7 @@
 ## 2026-11-04 - Extract Interactive Text Input to Prevent Root Re-renders
 **Learning:** Hoisting high-frequency interactive state (like keystrokes in a textarea) to the root of a large component causes the entire application to re-render on every keystroke, degrading typing performance significantly.
 **Action:** Extract text inputs and their immediate surrounding UI into localized, memoized components to isolate state changes and prevent parent re-renders.
+
+## 2026-11-04 - Concurrent Independent Database Fetch
+**Learning:** Sequential database fetches for independent entities (like an article and its blocks) introduce unnecessary network and latency bottlenecks on the backend API layer.
+**Action:** Always fetch independent entities concurrently using `Promise.all` and ensure sub-queries correctly resolve via relational constraints (e.g., `JOIN`) without depending on the parent query's runtime evaluation.
