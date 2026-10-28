@@ -91,19 +91,28 @@ app.get('/api/articles', async (req, res) => {
 app.get('/api/articles/slug/:slug', async (req, res) => {
     try {
         const { slug } = req.params;
-        const articleResult = await pool.query(`
-            SELECT a.*, c.name as category_name, c.frequency_type
-            FROM articles a
-            LEFT JOIN categories c ON a.category_id = c.id
-            WHERE a.slug = $1 AND a.status = 'published'
-        `, [slug]);
+        // ⚡ Bolt: Execute independent database queries concurrently to reduce response latency
+        const [articleResult, blocksResult] = await Promise.all([
+            pool.query(`
+                SELECT a.*, c.name as category_name, c.frequency_type
+                FROM articles a
+                LEFT JOIN categories c ON a.category_id = c.id
+                WHERE a.slug = $1 AND a.status = 'published'
+            `, [slug]),
+            pool.query(`
+                SELECT b.*
+                FROM article_blocks b
+                JOIN articles a ON b.article_id = a.id
+                WHERE a.slug = $1 AND a.status = 'published'
+                ORDER BY b.position ASC
+            `, [slug])
+        ]);
 
         if (articleResult.rows.length === 0) {
             return res.status(404).json({ error: 'Article not found' });
         }
 
         const article = articleResult.rows[0];
-        const blocksResult = await pool.query('SELECT * FROM article_blocks WHERE article_id = $1 ORDER BY position ASC', [article.id]);
         article.blocks = blocksResult.rows;
 
         res.json(article);
