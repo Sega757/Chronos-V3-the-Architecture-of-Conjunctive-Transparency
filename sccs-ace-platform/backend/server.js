@@ -164,7 +164,13 @@ app.get('/api/logs', async (req, res) => {
 
 app.get('/api/metrics', async (req, res) => {
     try {
-        const result = await pool.query('SELECT article_id, views, clicks, avg_time_seconds, bounce_rate FROM metrics');
+        // 🛡️ Sentinel: Enforce state constraints to prevent BOLA and Information Disclosure of hidden entity data
+        const result = await pool.query(`
+            SELECT m.article_id, m.views, m.clicks, m.avg_time_seconds, m.bounce_rate
+            FROM metrics m
+            JOIN articles a ON m.article_id = a.id
+            WHERE a.status = 'published'
+        `);
         // Transform into a map by article_id for the frontend
         const metricsMap = {};
         result.rows.forEach(row => {
@@ -234,6 +240,9 @@ app.post('/api/verify', apiLimiter, (req, res) => {
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`SCCS Control Plane running on port ${PORT}`);
-});
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`SCCS Control Plane running on port ${PORT}`);
+    });
+}
+module.exports = app;
