@@ -1176,7 +1176,15 @@ Forensic Reasoning Ledger (L-E-J-D-A-S)
   aria-label="Forensic reasoning ledger logs"
 >
 
-{renderedLogs}
+{logs.length === 0 ? (
+  <div className="bg-[#161b22] border border-[#30363d] border-dashed rounded-lg p-10 flex flex-col items-center justify-center text-center">
+    <span className="text-4xl mb-4" aria-hidden="true">📇</span>
+    <h2 className="text-sm font-semibold uppercase text-[#8b949e] mb-2 tracking-wider">Ledger Empty</h2>
+    <p className="text-xs text-[#8b949e]">Execute an Audit Pulse in the terminal to generate forensic logs.</p>
+  </div>
+) : (
+  renderedLogs
+)}
 
 </div>
 

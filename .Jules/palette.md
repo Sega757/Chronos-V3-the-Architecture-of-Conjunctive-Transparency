@@ -60,3 +60,7 @@
 ## 2026-10-23 - Prevent Dead-End Empty States and Errors
 **Learning:** Found that the dynamic article page (ODR Viewer) lacked a recovery call-to-action on its 404 error state. When a knowledge object fails to load, users are trapped on an error page without an explicit way to return to the main feed, creating a dead-end experience.
 **Action:** Always provide a clear, accessible recovery Call-to-Action (CTA) (e.g., a 'Return Home' link via next/link) on 404 error pages and empty states. Ensure it has proper layout (centered) and focus-visible accessibility styles to guide users back to safety.
+
+## 2026-10-24 - Prevent Dead-End Empty States in Dynamic Feeds
+**Learning:** Found that the dynamic Forensic Ledger lacked a recovery or guidance call-to-action on its empty state, leaving users with a confusing blank space until logs were generated.
+**Action:** Always provide explicit empty states for dynamic feeds to guide users on what action to take next to populate the content, using a consistent design pattern (e.g., dashed borders, centered content, descriptive CTA).
