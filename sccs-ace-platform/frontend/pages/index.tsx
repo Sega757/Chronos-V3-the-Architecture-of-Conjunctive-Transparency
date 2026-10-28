@@ -1176,7 +1176,19 @@ Forensic Reasoning Ledger (L-E-J-D-A-S)
   aria-label="Forensic reasoning ledger logs"
 >
 
-{renderedLogs}
+{renderedLogs.length > 0 ? renderedLogs : (
+  <div className="border border-dashed border-[#30363d] rounded-lg p-8 flex flex-col items-center justify-center text-center">
+    <span className="text-3xl mb-3 opacity-50" aria-hidden="true">📊</span>
+    <p className="text-sm text-[#c9d1d9] mb-1 font-semibold">Ledger is empty</p>
+    <p className="text-xs text-[#8b949e] mb-4">Execute an audit pulse to generate forensic reasoning logs.</p>
+    <button
+      onClick={() => document.getElementById('prompt-input')?.focus()}
+      className="bg-[#21262d] hover:bg-[#30363d] text-[#c9d1d9] text-xs py-1.5 px-3 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#161b22]"
+    >
+      Focus Input
+    </button>
+  </div>
+)}
 
 </div>
 
