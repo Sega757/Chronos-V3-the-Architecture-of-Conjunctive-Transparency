@@ -5,3 +5,7 @@
 ## 2026-10-04 - Keyboard Accessibility for Primary Actions
 **Learning:** Primary action buttons were missing visible focus indicators, making them invisible to keyboard navigation users. Relying only on hover states excludes a significant portion of users.
 **Action:** Always add explicit `focus-visible:ring` styles to all interactive elements to ensure clear visual feedback during keyboard navigation.
+
+## 2026-10-05 - Dynamic and Accessible Status Badges
+**Learning:** Visual-only status indicators provide no context to screen readers or users who don't understand the color code. Hardcoded colors fail to reflect dynamic states like errors. Additionally, solid bright backgrounds with similar colored text fail WCAG contrast guidelines.
+**Action:** Always add semantic meaning via role="status", aria-label, and title for hover tooltips. Ensure badges dynamically reflect their state using accessible styling (e.g., red for errors, green for success) rather than statically hardcoding colors. Use a semi-transparent background combined with a solid or semi-transparent border to ensure readability.

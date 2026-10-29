@@ -288,9 +288,20 @@ const LogItem = React.memo(({ log }: { log: GenerationLog }) => (
         <span>Execution Time:</span>
         <span className="text-[#7ee787]">{log.execution_time_ms} ms</span>
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <span>Status Badge:</span>
-        <span className="text-[#3fb950] uppercase font-bold">{log.status}</span>
+        <span
+          className={`px-1.5 py-0.5 rounded border uppercase font-bold ${
+            log.status === 'success'
+              ? 'bg-[#238636]/20 border-[#238636]/40 text-[#56d364]'
+              : 'bg-[#da3637]/20 border-[#da3637]/40 text-[#ff7b72]'
+          }`}
+          role="status"
+          aria-label={`Status: ${log.status}`}
+          title={`Status: ${log.status}`}
+        >
+          {log.status}
+        </span>
       </div>
     </div>
 
