@@ -72,8 +72,19 @@ app.get('/api/sites', async (req, res) => {
     }
 });
 
+// ⚡ Bolt: Cache expensive API call results to prevent database bottleneck on unbounded fetch
+let articlesCache = {
+    data: null,
+    lastFetch: 0
+};
+const ARTICLES_CACHE_TTL_MS = 60 * 1000; // 1 minute
+
 app.get('/api/articles', async (req, res) => {
     try {
+        if (articlesCache.data && (Date.now() - articlesCache.lastFetch < ARTICLES_CACHE_TTL_MS)) {
+            return res.json(articlesCache.data);
+        }
+
         const result = await pool.query(`
             SELECT a.id, a.title, a.slug, a.summary, a.status, a.views_count, a.published_at, c.name as category_name, c.frequency_type
             FROM articles a
@@ -81,6 +92,9 @@ app.get('/api/articles', async (req, res) => {
             WHERE a.status = 'published'
             ORDER BY a.published_at DESC
         `);
+
+        articlesCache.data = result.rows;
+        articlesCache.lastFetch = Date.now();
         res.json(result.rows);
     } catch (err) {
         console.error('API Error:', err);

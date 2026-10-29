@@ -42,3 +42,6 @@
 ## 2026-11-04 - Concurrent Independent Database Fetch
 **Learning:** Sequential database fetches for independent entities (like an article and its blocks) introduce unnecessary network and latency bottlenecks on the backend API layer.
 **Action:** Always fetch independent entities concurrently using `Promise.all` and ensure sub-queries correctly resolve via relational constraints (e.g., `JOIN`) without depending on the parent query's runtime evaluation.
+## 2026-10-29 - API Pagination vs Caching
+**Learning:** When optimizing unbounded list queries via pagination (`LIMIT`/`OFFSET`), enforcing a default limit without updating the client creates a breaking truncation regression.
+**Action:** For read-heavy, parameter-less endpoints where client updates are out-of-scope, use an in-memory TTL cache to reduce database load without breaking the API contract.
