@@ -57,6 +57,13 @@ const chronosClient = new sccs_proto.RealityFilter(
     grpc.credentials.createInsecure()
 );
 
+// ⚡ Bolt: Simple in-memory cache for frequently accessed static data
+const cache = {
+    sites: { data: null, timestamp: 0 },
+    categories: { data: null, timestamp: 0 }
+};
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
 // API Routes
 app.get('/api/health', (req, res) => {
     res.json({ status: 'healthy', service: 'SCCS Control Plane' });
@@ -64,7 +71,13 @@ app.get('/api/health', (req, res) => {
 
 app.get('/api/sites', async (req, res) => {
     try {
+        // ⚡ Bolt: Return cached response if valid to avoid DB roundtrips
+        if (cache.sites.data && (Date.now() - cache.sites.timestamp < CACHE_TTL)) {
+            return res.json(cache.sites.data);
+        }
         const result = await pool.query('SELECT * FROM sites WHERE is_active = true');
+        cache.sites.data = result.rows;
+        cache.sites.timestamp = Date.now();
         res.json(result.rows);
     } catch (err) {
         console.error('API Error:', err);
@@ -194,7 +207,13 @@ app.get('/api/metrics', async (req, res) => {
 
 app.get('/api/categories', async (req, res) => {
     try {
+        // ⚡ Bolt: Return cached response if valid to avoid DB roundtrips
+        if (cache.categories.data && (Date.now() - cache.categories.timestamp < CACHE_TTL)) {
+            return res.json(cache.categories.data);
+        }
         const result = await pool.query('SELECT * FROM categories');
+        cache.categories.data = result.rows;
+        cache.categories.timestamp = Date.now();
         res.json(result.rows);
     } catch (err) {
         console.error('API Error:', err);
