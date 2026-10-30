@@ -42,3 +42,6 @@
 ## 2026-11-04 - Concurrent Independent Database Fetch
 **Learning:** Sequential database fetches for independent entities (like an article and its blocks) introduce unnecessary network and latency bottlenecks on the backend API layer.
 **Action:** Always fetch independent entities concurrently using `Promise.all` and ensure sub-queries correctly resolve via relational constraints (e.g., `JOIN`) without depending on the parent query's runtime evaluation.
+## 2026-10-30 - In-Memory Caching for Static Endpoints
+**Learning:** Backend endpoints that fetch static, parameter-less tables (like `sites` or `categories`) are frequently called and can cause DB load. Simple object-based in-memory caching with a TTL is a highly effective, low-risk optimization.
+**Action:** Add in-memory TTL caches for endpoints serving frequently accessed, slowly-changing static data to avoid unnecessary database queries.
