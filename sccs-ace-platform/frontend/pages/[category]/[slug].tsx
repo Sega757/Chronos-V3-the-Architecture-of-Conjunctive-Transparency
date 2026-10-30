@@ -48,6 +48,19 @@ export default function ArticleODR({ article, error }: Props) {
         <title>{article.title} - SCCS / ACE</title>
       </Head>
 
+      <nav className="mb-6">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-sm text-[#8b949e] hover:text-[#58a6ff] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] rounded px-2 py-1 -ml-2"
+
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+          </svg>
+          Back to Control Panel
+        </Link>
+      </nav>
+
       <header className="mb-8 border-b border-[#21262d] pb-6">
         <div className="flex items-center gap-2 mb-3">
           <span className="text-xs font-mono bg-[#1f242c] text-[#58a6ff] px-2 py-1 rounded">
