@@ -64,3 +64,7 @@
 ## 2026-10-24 - Provide Explicit Empty States for Dynamic Lists
 **Learning:** Found that dynamic lists (such as the Categories grid, Content feed, and Forensic Ledger) lacked explicit empty states when no data was present, leaving users with confusing blank spaces.
 **Action:** Always implement explicitly designed, accessible empty states (e.g., using dashed borders, centered text, and relevant icons/CTAs) for dynamic content feeds to guide the user when no data is available.
+
+## 2026-10-25 - Prevent Trapped Users on Direct Navigation
+**Learning:** Users who land directly on a specific article's dynamic page (e.g., via a shared link) have no clear way to navigate back to the main control panel to see other content. This creates a trapped user experience that relies on browser back buttons, which may not exist if it's their first entry point.
+**Action:** Always provide a clear, accessible "Back to Control Panel" navigation link at the top of isolated dynamic views, using `next/link` for fast client-side routing, paired with proper `focus-visible` states and a descriptive icon.
