@@ -40,6 +40,22 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL
 });
 
+// ⚡ Bolt: Simple in-memory cache for parameter-less endpoints with infrequent updates
+const apiCache = new Map();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function getCachedData(key) {
+    const cached = apiCache.get(key);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+        return cached.data;
+    }
+    return null;
+}
+
+function setCachedData(key, data) {
+    apiCache.set(key, { data, timestamp: Date.now() });
+}
+
 // Setup gRPC Client
 const PROTO_PATH = path.join(__dirname, '../sccs_core/protos/chronos_interface.proto');
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
@@ -64,7 +80,13 @@ app.get('/api/health', (req, res) => {
 
 app.get('/api/sites', async (req, res) => {
     try {
+        const cacheKey = 'sites';
+        const cached = getCachedData(cacheKey);
+        if (cached) {
+            return res.json(cached);
+        }
         const result = await pool.query('SELECT * FROM sites WHERE is_active = true');
+        setCachedData(cacheKey, result.rows);
         res.json(result.rows);
     } catch (err) {
         console.error('API Error:', err);
@@ -194,7 +216,13 @@ app.get('/api/metrics', async (req, res) => {
 
 app.get('/api/categories', async (req, res) => {
     try {
+        const cacheKey = 'categories';
+        const cached = getCachedData(cacheKey);
+        if (cached) {
+            return res.json(cached);
+        }
         const result = await pool.query('SELECT * FROM categories');
+        setCachedData(cacheKey, result.rows);
         res.json(result.rows);
     } catch (err) {
         console.error('API Error:', err);
