@@ -53,7 +53,8 @@ class HypothesisGeneratorServicer(system1_hypothesis_pb2_grpc.HypothesisGenerato
         try:
             candidates = self._build_candidates(request)
         except InvalidRequestError as exc:
-            context.abort(grpc.StatusCode.INVALID_ARGUMENT, str(exc))
+            logger.error("InvalidRequestError in GenerateHypotheses: %s", exc)
+            context.abort(grpc.StatusCode.INVALID_ARGUMENT, "Invalid request")
         except GenerationBackendError as exc:
             logger.error("GenerationBackendError in GenerateHypotheses: %s", exc)
             context.abort(grpc.StatusCode.UNAVAILABLE, "Internal server error")
@@ -69,7 +70,8 @@ class HypothesisGeneratorServicer(system1_hypothesis_pb2_grpc.HypothesisGenerato
         try:
             candidates = self._build_candidates(request)
         except InvalidRequestError as exc:
-            context.abort(grpc.StatusCode.INVALID_ARGUMENT, str(exc))
+            logger.error("InvalidRequestError in StreamHypotheses: %s", exc)
+            context.abort(grpc.StatusCode.INVALID_ARGUMENT, "Invalid request")
             return
         except GenerationBackendError as exc:
             logger.error("GenerationBackendError in StreamHypotheses: %s", exc)

@@ -56,7 +56,8 @@ class ChronosVerifierServicer(system2_verifier_pb2_grpc.ChronosVerifierServicer)
         try:
             result = self._verify_one(request)
         except InvalidRequestError as exc:
-            context.abort(grpc.StatusCode.INVALID_ARGUMENT, str(exc))
+            logger.error("InvalidRequestError in Verify: %s", exc)
+            context.abort(grpc.StatusCode.INVALID_ARGUMENT, "Invalid request")
         except SigningError as exc:
             logger.error("SigningError in Verify: %s", exc)
             context.abort(grpc.StatusCode.INTERNAL, "Internal server error")
@@ -71,7 +72,8 @@ class ChronosVerifierServicer(system2_verifier_pb2_grpc.ChronosVerifierServicer)
             try:
                 results.append(self._verify_one(req))
             except InvalidRequestError as exc:
-                context.abort(grpc.StatusCode.INVALID_ARGUMENT, str(exc))
+                logger.error("InvalidRequestError in BatchVerify: %s", exc)
+                context.abort(grpc.StatusCode.INVALID_ARGUMENT, "Invalid request")
             except SigningError as exc:
                 logger.error("SigningError in BatchVerify: %s", exc)
                 context.abort(grpc.StatusCode.INTERNAL, "Internal server error")

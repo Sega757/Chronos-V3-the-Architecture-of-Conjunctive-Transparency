@@ -51,3 +51,7 @@
 **Vulnerability:** The `/api/metrics` endpoint fetches aggregated metrics without joining the parent `articles` table to enforce state constraints (like `status = 'published'`). This allows unauthorized access to secondary metrics associated with unpublished or hidden items.
 **Learning:** Always explicitly project columns and enforce parent constraints on unauthenticated APIs returning list or aggregated data to prevent Broken Object Level Authorization (BOLA) and Information Disclosure.
 **Prevention:** Use SQL `JOIN`s to filter out related secondary data associated with unpublished/unauthorized parent items.
+## 2024-05-24 - Fix Information Disclosure in gRPC Error Handling
+**Vulnerability:** Information Exposure via raw exceptions (`str(exc)`) directly returned to clients (CWE-209).
+**Learning:** Returning exception strings via `context.abort()` leaks server-side internals.
+**Prevention:** Always log exceptions server-side and return generic error messages to clients.
