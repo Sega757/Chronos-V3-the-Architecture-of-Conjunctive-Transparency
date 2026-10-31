@@ -64,3 +64,7 @@
 ## 2026-10-24 - Provide Explicit Empty States for Dynamic Lists
 **Learning:** Found that dynamic lists (such as the Categories grid, Content feed, and Forensic Ledger) lacked explicit empty states when no data was present, leaving users with confusing blank spaces.
 **Action:** Always implement explicitly designed, accessible empty states (e.g., using dashed borders, centered text, and relevant icons/CTAs) for dynamic content feeds to guide the user when no data is available.
+
+## 2024-10-31 - Escape Hatch for Isolated Views
+**Learning:** Found that isolated dynamic views lack clear navigation back to the main control panel, trapping users who arrive via direct links.
+**Action:** Always provide an explicit, accessible escape hatch navigation link (e.g., 'Back to Control Panel') using Next.js 'next/link' with descriptive icons and proper 'focus-visible' styles.

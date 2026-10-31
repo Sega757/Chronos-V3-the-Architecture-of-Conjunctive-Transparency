@@ -49,6 +49,14 @@ export default function ArticleODR({ article, error }: Props) {
       </Head>
 
       <header className="mb-8 border-b border-[#21262d] pb-6">
+        <div className="mb-6">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm text-[#8b949e] hover:text-[#58a6ff] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] rounded px-2 py-1 -ml-2"
+          >
+            <span aria-hidden="true">&larr;</span> Back to Control Panel
+          </Link>
+        </div>
         <div className="flex items-center gap-2 mb-3">
           <span className="text-xs font-mono bg-[#1f242c] text-[#58a6ff] px-2 py-1 rounded">
             {article.category_name}
