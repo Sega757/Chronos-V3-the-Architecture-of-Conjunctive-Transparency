@@ -42,3 +42,7 @@
 ## 2026-11-04 - Concurrent Independent Database Fetch
 **Learning:** Sequential database fetches for independent entities (like an article and its blocks) introduce unnecessary network and latency bottlenecks on the backend API layer.
 **Action:** Always fetch independent entities concurrently using `Promise.all` and ensure sub-queries correctly resolve via relational constraints (e.g., `JOIN`) without depending on the parent query's runtime evaluation.
+
+## 2026-11-04 - In-Memory Cache for Parameter-less Endpoints
+**Learning:** For parameter-less API endpoints fetching infrequently changing data, adding a simple in-memory cache (with a TTL) is a safe backend performance optimization that reduces database load without altering the API signature or causing client regressions.
+**Action:** Always add in-memory caching to parameter-less endpoints.
