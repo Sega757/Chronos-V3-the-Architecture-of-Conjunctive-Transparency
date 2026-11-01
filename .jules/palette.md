@@ -5,3 +5,7 @@
 ## 2026-10-04 - Keyboard Accessibility for Primary Actions
 **Learning:** Primary action buttons were missing visible focus indicators, making them invisible to keyboard navigation users. Relying only on hover states excludes a significant portion of users.
 **Action:** Always add explicit `focus-visible:ring` styles to all interactive elements to ensure clear visual feedback during keyboard navigation.
+
+## 2026-11-01 - Dynamic Status Badges
+**Learning:** Hardcoding success colors (like green) for status badges that can reflect errors causes severe cognitive dissonance and accessibility failures when errors actually occur.
+**Action:** Always ensure status badges dynamically apply colors based on their state and include `role="status"` with an `aria-label` for semantic meaning.

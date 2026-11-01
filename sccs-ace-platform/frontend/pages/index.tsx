@@ -290,7 +290,13 @@ const LogItem = React.memo(({ log }: { log: GenerationLog }) => (
       </div>
       <div className="flex justify-between">
         <span>Status Badge:</span>
-        <span className="text-[#3fb950] uppercase font-bold">{log.status}</span>
+        <span
+          className={`uppercase font-bold ${log.status === 'error' ? 'text-[#f85149]' : 'text-[#3fb950]'}`}
+          role="status"
+          aria-label={`Status: ${log.status}`}
+        >
+          {log.status}
+        </span>
       </div>
     </div>
 
