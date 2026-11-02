@@ -60,7 +60,9 @@ const chronosClient = new sccs_proto.RealityFilter(
 // ⚡ Bolt: Simple in-memory cache for parameter-less API endpoints fetching infrequently changing data
 const apiCache = {
     categories: { data: null, timestamp: 0 },
-    sites: { data: null, timestamp: 0 }
+    sites: { data: null, timestamp: 0 },
+    articles: { data: null, timestamp: 0 },
+    metrics: { data: null, timestamp: 0 }
 };
 const CACHE_TTL_MS = 60 * 1000; // 1 minute in milliseconds
 
@@ -89,6 +91,10 @@ app.get('/api/sites', async (req, res) => {
 
 app.get('/api/articles', async (req, res) => {
     try {
+        // ⚡ Bolt: Serve from in-memory cache if valid to reduce database load
+        if (apiCache.articles.data && (Date.now() - apiCache.articles.timestamp < CACHE_TTL_MS)) {
+            return res.json(apiCache.articles.data);
+        }
         const result = await pool.query(`
             SELECT a.id, a.title, a.slug, a.summary, a.status, a.views_count, a.published_at, c.name as category_name, c.frequency_type
             FROM articles a
@@ -96,6 +102,10 @@ app.get('/api/articles', async (req, res) => {
             WHERE a.status = 'published'
             ORDER BY a.published_at DESC
         `);
+
+        apiCache.articles.data = result.rows;
+        apiCache.articles.timestamp = Date.now();
+
         res.json(result.rows);
     } catch (err) {
         console.error('API Error:', err);
@@ -188,6 +198,10 @@ app.get('/api/logs', async (req, res) => {
 
 app.get('/api/metrics', async (req, res) => {
     try {
+        // ⚡ Bolt: Serve from in-memory cache if valid to reduce database load
+        if (apiCache.metrics.data && (Date.now() - apiCache.metrics.timestamp < CACHE_TTL_MS)) {
+            return res.json(apiCache.metrics.data);
+        }
         // 🛡️ Sentinel: Enforce state constraints to prevent BOLA and Information Disclosure of hidden entity data
         const result = await pool.query(`
             SELECT m.article_id, m.views, m.clicks, m.avg_time_seconds, m.bounce_rate
@@ -200,6 +214,10 @@ app.get('/api/metrics', async (req, res) => {
         result.rows.forEach(row => {
             metricsMap[row.article_id] = row;
         });
+
+        apiCache.metrics.data = metricsMap;
+        apiCache.metrics.timestamp = Date.now();
+
         res.json(metricsMap);
     } catch (err) {
         console.error('API Error:', err);

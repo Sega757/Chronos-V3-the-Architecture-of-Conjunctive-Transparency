@@ -46,3 +46,6 @@
 ## 2026-11-04 - In-Memory Cache for Parameter-less Endpoints
 **Learning:** For parameter-less API endpoints fetching infrequently changing data, adding a simple in-memory cache (with a TTL) is a safe backend performance optimization that reduces database load without altering the API signature or causing client regressions.
 **Action:** Always add in-memory caching to parameter-less endpoints.
+## 2026-11-04 - Mocking Backend Dependencies for Express Integration Testing
+**Learning:** When verifying Express API endpoints via temporary scripts in this repository, internal routing inspection via `app._router.stack` is brittle. Additionally, `sccs-ace-platform/backend/server.js` immediately crashes on require if dependencies like `pg`, `bullmq`, and `ioredis` are not properly stubbed in `require.cache` or if required environment variables like `DATABASE_URL` are missing.
+**Action:** Use Node's built-in `http` module to start a temporary server on port 0, and proactively stub all heavy database/queue dependencies in `require.cache` before requiring the server module.
