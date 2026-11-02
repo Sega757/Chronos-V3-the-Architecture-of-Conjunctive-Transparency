@@ -68,3 +68,7 @@
 ## 2024-10-31 - Escape Hatch for Isolated Views
 **Learning:** Found that isolated dynamic views lack clear navigation back to the main control panel, trapping users who arrive via direct links.
 **Action:** Always provide an explicit, accessible escape hatch navigation link (e.g., 'Back to Control Panel') using Next.js 'next/link' with descriptive icons and proper 'focus-visible' styles.
+
+## 2024-05-18 - Actionable Empty States & Badge Contrast
+**Learning:** Empty states without a clear Call-to-Action (CTA) lead to dead-ends. Also, solid text color on a dark background for badges can sometimes feel unpolished or lack contrast. Using semi-transparent backgrounds with borders improves visibility and aesthetics.
+**Action:** Always include a CTA in empty states to guide users. For badges in dark mode, use semi-transparent backgrounds (e.g., `bg-opacity-20` or `/20`) with a solid or semi-transparent border to ensure readability and accessibility.
