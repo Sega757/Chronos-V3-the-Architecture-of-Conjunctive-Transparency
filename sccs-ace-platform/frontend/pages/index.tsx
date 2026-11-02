@@ -288,10 +288,10 @@ const LogItem = React.memo(({ log }: { log: GenerationLog }) => (
         <span>Execution Time:</span>
         <span className="text-[#7ee787]">{log.execution_time_ms} ms</span>
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <span>Status Badge:</span>
         <span
-          className={`uppercase font-bold ${log.status === 'error' ? 'text-[#f85149]' : 'text-[#3fb950]'}`}
+          className={`px-1.5 py-0.5 rounded border text-[10px] uppercase font-bold ${log.status === 'error' ? 'bg-[#f85149]/20 text-[#f85149] border-[#f85149]/40' : 'bg-[#3fb950]/20 text-[#3fb950] border-[#3fb950]/40'}`}
           role="status"
           aria-label={`Status: ${log.status}`}
         >
@@ -1211,7 +1211,13 @@ renderedSimLog
     <div className="border border-[#30363d] border-dashed rounded-lg p-10 flex flex-col items-center justify-center text-center mt-2">
       <span className="text-4xl mb-4" aria-hidden="true">⚖️</span>
       <h2 className="text-sm font-semibold uppercase text-[#8b949e] mb-2 tracking-wider">Empty Forensic Ledger</h2>
-      <p className="text-xs text-[#8b949e]">No reasoning logs recorded yet. Execute an Audit Pulse to populate.</p>
+      <p className="text-xs text-[#8b949e] mb-4">No reasoning logs recorded yet. Execute an Audit Pulse to populate.</p>
+      <button
+        className="bg-[#21262d] hover:bg-[#30363d] text-[#c9d1d9] px-4 py-2 rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d1117]"
+        onClick={() => document.getElementById('prompt-input')?.focus()}
+      >
+        Execute Audit Pulse
+      </button>
     </div>
   )}
 </div>
