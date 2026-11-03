@@ -72,3 +72,7 @@
 ## 2024-05-18 - Actionable Empty States & Badge Contrast
 **Learning:** Empty states without a clear Call-to-Action (CTA) lead to dead-ends. Also, solid text color on a dark background for badges can sometimes feel unpolished or lack contrast. Using semi-transparent backgrounds with borders improves visibility and aesthetics.
 **Action:** Always include a CTA in empty states to guide users. For badges in dark mode, use semi-transparent backgrounds (e.g., `bg-opacity-20` or `/20`) with a solid or semi-transparent border to ensure readability and accessibility.
+
+## 2026-10-25 - Iframe Title Accessibility
+**Learning:** Found that dynamically rendered `iframe` elements (like YouTube video embeds) lacked a `title` attribute. Without this, screen readers cannot identify the content or purpose of the embedded frame, which is a WCAG 4.1.2 violation.
+**Action:** Always provide a descriptive `title` attribute on `iframe` elements to ensure their purpose is accessible to assistive technologies.
