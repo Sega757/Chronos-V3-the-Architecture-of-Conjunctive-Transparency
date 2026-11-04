@@ -60,6 +60,7 @@ export function renderBlock(block: any) {
                     {/* ⚡ Bolt: Lazy load assets for better initial page performance */}
                     <iframe
                         src={block.content}
+                        title="YouTube video player"
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
