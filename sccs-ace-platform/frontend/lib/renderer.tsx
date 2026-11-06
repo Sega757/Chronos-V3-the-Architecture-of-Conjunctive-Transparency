@@ -1,21 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+const CodeBlock = ({ content }: { content: string }) => {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(content);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    return (
+        <div className="relative group">
+            <div
+                className="bg-[#161b22] border border-[#30363d] rounded-md p-4 overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff]"
+                tabIndex={0}
+                aria-label="Code block"
+            >
+                <pre className="text-sm font-mono text-[#7ee787]">
+                    <code>{content}</code>
+                </pre>
+            </div>
+            <button
+                onClick={handleCopy}
+                className="absolute top-2 right-2 bg-[#21262d] border border-[#30363d] hover:bg-[#30363d] text-[#c9d1d9] px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff]"
+                aria-label={copied ? "Copied to clipboard" : "Copy code"}
+            >
+                {copied ? 'Copied!' : 'Copy'}
+            </button>
+            <div aria-live="polite" className="sr-only">
+                {copied ? 'Code copied to clipboard' : ''}
+            </div>
+        </div>
+    );
+};
 
 export function renderBlock(block: any) {
     switch (block.block_type) {
         case 'text':
             return <p className="text-base text-[#c9d1d9] leading-relaxed">{block.content}</p>;
         case 'code':
-            return (
-                <div
-                    className="bg-[#161b22] border border-[#30363d] rounded-md p-4 overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff]"
-                    tabIndex={0}
-                    aria-label="Code block"
-                >
-                    <pre className="text-sm font-mono text-[#7ee787]">
-                        <code>{block.content}</code>
-                    </pre>
-                </div>
-            );
+            return <CodeBlock content={block.content} />;
         case 'quote':
             return (
                 <blockquote className="border-l-4 border-[#58a6ff] pl-4 italic text-[#8b949e] my-4">
