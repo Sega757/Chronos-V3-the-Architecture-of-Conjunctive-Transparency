@@ -1,21 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+const CodeBlock = ({ content }: { content: string }) => {
+    const [isCopied, setIsCopied] = useState(false);
+    return (
+        <div className="relative group my-4">
+            <div
+                className="bg-[#161b22] border border-[#30363d] rounded-md p-4 overflow-x-auto pr-16 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff]"
+                tabIndex={0}
+                aria-label="Code block"
+            >
+                <pre className="text-sm font-mono text-[#7ee787]">
+                    <code>{content}</code>
+                </pre>
+            </div>
+            <button
+                aria-label="Copy code block"
+                className="absolute top-2 right-2 bg-[#21262d] hover:bg-[#30363d] text-[#c9d1d9] text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff]"
+                onClick={() => {
+                    navigator.clipboard.writeText(content);
+                    setIsCopied(true);
+                    setTimeout(() => setIsCopied(false), 2000);
+                }}
+            >
+                <span aria-live="polite">{isCopied ? 'Copied!' : 'Copy'}</span>
+            </button>
+        </div>
+    );
+};
 
 export function renderBlock(block: any) {
     switch (block.block_type) {
         case 'text':
             return <p className="text-base text-[#c9d1d9] leading-relaxed">{block.content}</p>;
         case 'code':
-            return (
-                <div
-                    className="bg-[#161b22] border border-[#30363d] rounded-md p-4 overflow-x-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58a6ff]"
-                    tabIndex={0}
-                    aria-label="Code block"
-                >
-                    <pre className="text-sm font-mono text-[#7ee787]">
-                        <code>{block.content}</code>
-                    </pre>
-                </div>
-            );
+            return <CodeBlock content={block.content} />;
         case 'quote':
             return (
                 <blockquote className="border-l-4 border-[#58a6ff] pl-4 italic text-[#8b949e] my-4">
