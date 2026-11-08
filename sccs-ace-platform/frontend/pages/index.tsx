@@ -1153,7 +1153,11 @@ renderedSimLog
 
 <span className="text-[#8b949e]">Internal Logic:</span>
 
-<span className={ctStatus.logic ? 'text-[#36b356] font-bold' : 'text-[#f85149] font-bold'}>
+<span
+  className={`px-1.5 py-0.5 rounded border text-[10px] uppercase font-bold ${ctStatus.logic ? 'bg-[#3fb950]/20 text-[#3fb950] border-[#3fb950]/40' : 'bg-[#f85149]/20 text-[#f85149] border-[#f85149]/40'}`}
+  role="status"
+  aria-label={ctStatus.logic ? 'Internal Logic Status: PASSED' : 'Internal Logic Status: FAILED'}
+>
 
 {ctStatus.logic ? 'PASSED' : 'FAILED'}
 
@@ -1165,7 +1169,11 @@ renderedSimLog
 
 <span className="text-[#8b949e]">External Fact Check:</span>
 
-<span className={ctStatus.fact ? 'text-[#36b356] font-bold' : 'text-[#f85149] font-bold'}>
+<span
+  className={`px-1.5 py-0.5 rounded border text-[10px] uppercase font-bold ${ctStatus.fact ? 'bg-[#3fb950]/20 text-[#3fb950] border-[#3fb950]/40' : 'bg-[#f85149]/20 text-[#f85149] border-[#f85149]/40'}`}
+  role="status"
+  aria-label={ctStatus.fact ? 'External Fact Check Status: VERIFIED' : 'External Fact Check Status: OUTLIER REJECT'}
+>
 
 {ctStatus.fact ? 'VERIFIED' : 'OUTLIER REJECT'}
 

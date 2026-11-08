@@ -76,3 +76,7 @@
 ## 2024-11-04 - Descriptive Iframes for Accessibility
 **Learning:** Iframes without a 'title' attribute violate WCAG 4.1.2 standards as their purpose is opaque to screen readers. In dynamic content rendering (like the article renderer), it's crucial to explicitly label embeds so assistive technology users understand what the content frame represents before interacting with it.
 **Action:** Always provide a descriptive 'title' attribute (e.g., 'title="YouTube video player"') on 'iframe' elements to ensure accessibility for all users.
+
+## 2026-11-08 - Accessible Dynamic Status Badges and Error State Feedback
+**Learning:** When simulating or processing actions that have success and error states, both paths actively push visible feedback to the UI (e.g., logging an error state instead of failing silently). Status badges must dynamically reflect their state using accessible styling (e.g., red for errors, green for success) rather than statically hardcoding colors, and must include `role="status"` with a descriptive `aria-label`.
+**Action:** Always wrap real-time metric containers in `aria-live="polite"` and provide a secondary indicator (like a text-based Warning badge with `role="status"`) to ensure state changes are conveyed semantically and visually beyond just color.
